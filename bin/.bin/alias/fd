@@ -1,0 +1,5 @@
+#!/bin/sh
+
+_dir="$(find ${1:-.} -type d 2>/dev/null | fzf-tmux +m --select-1 --exit-0)"\
+    && cd "$_dir"
+unset _dir

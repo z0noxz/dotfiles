@@ -1,0 +1,15 @@
+#!/bin/sh
+
+args=" -l 20 -w $WINDOWID"
+stdin=$(cat)
+url=""
+urls="$(printf "$stdin" |\
+    sed 's/\(\(https\|http\|sftp\|ftp\|telnet\)\:\/\/\)/\n\1/g' |\
+    sed '/^\(http\|https\|ftp\|sftp\|telnet\)/!d' |\
+    sed 's/\(^\(https\|http\|sftp\|ftp\|telnet\)\:\/\/[^ <]*\)\(.*\)/\1/g' |\
+    sort -u)"
+
+[ "$urls" = "" ] && exit
+
+url="$(printf "$urls" | dmenu_vtc${args})"
+[ "$url" != "" ] && dmenu_url_open "$url" ${args}

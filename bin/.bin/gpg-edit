@@ -1,0 +1,10 @@
+#!/bin/sh
+
+[ ! -f "$1" ] && exit
+data="$(gpg2 --decrypt --output - "$1")"
+
+[ "$?" -ne 0 ] && exit "$?"
+data="$(echo "$data" | pedit)"
+
+[ "$?" -ne 0 ] && exit "$?"
+echo "$data" | gpg2 --symmetric --output "$1" --yes

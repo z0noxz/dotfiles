@@ -1,0 +1,13 @@
+#!/bin/sh
+
+exec 4>&1
+( sed                                                                       \
+    -e "s/^\(.*warning.*\)$/$(tput setaf 3; tput bold)\1$(tput sgr0)/g"     \
+    -e "s/^\(.*error.*\)$/$(tput setaf 1; tput bold)\1$(tput sgr0)/g"       \
+    -e "s/^\(\s\{5,\}\)\(.*\)$/\1$(tput setaf 15; tput sitm)\2$(tput sgr0)/g"\
+    >&4 |&
+exec >&p
+/usr/bin/make $@ 2>&1 )
+ec=$?
+exec >&- >&4
+return ${ec}

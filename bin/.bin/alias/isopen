@@ -1,0 +1,19 @@
+#!/bin/sh
+
+if [ -n "$1" ] && [ "$1" != "" ] && [ -n "$2" ] && [ "$2" != "" ]; then
+    case "$2" in
+    ''|*[!0-9]*) echo "PORT is not a number" ;;
+    *)
+        case $((
+            ($2 <= 0)       * 1 +
+            ($2 > 65535)    * 2
+          )) in
+            (1) echo "PORT must be greater than 0" ;;
+            (2) echo "PORT must be lower than or equal to 65535" ;;
+            (0) nc -vzw 1 "$1" "$2" ;;
+        esac
+        ;;
+    esac
+else
+    echo "usage: isopen ADDRESS PORT"
+fi

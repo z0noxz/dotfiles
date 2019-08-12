@@ -1,0 +1,7 @@
+[user]
+	name = Chris Noxz
+	email = chris@noxz.tech
+[color]
+	ui = true
+[alias]
+	lg = log --color --graph --date=format:'%Y-%d-%m %H:%M:%S' --pretty=format:'%Cred%h%Creset - %Cgreen%cd%C(magenta)%d%Creset %C(bold blue)%an:%Creset %s %Creset' --abbrev-commit

@@ -1,0 +1,126 @@
+# Basic
+set editor                  = "/usr/bin/vim"
+set sendmail                = "msmtp-tpl ~/.msmtprc-template"
+set use_from                = yes
+set envelope_from           = yes
+set mail_check              = 0
+
+# composing mail
+set forward_format          = "Fwd: %s"
+set include
+set forward_quote
+set signature               = "~/.mutt/signature.muttrc"
+set sig_dashes              = yes
+set send_charset            = "us-ascii:utf-8"
+
+# Bindings
+bind index                  j next-entry
+bind index                  k previous-entry
+bind attach,index,pager     \ej next-page
+bind attach,index,pager     \ek previous-page
+bind pager                  g noop
+bind pager                  gg top
+bind pager                  G bottom
+bind attach,index           g noop
+bind attach,index           gg first-entry
+bind attach,index           G last-entry
+bind index,pager            D delete-message
+bind index                  d noop
+bind index                  \Cy previous-entry
+bind index                  \Ce next-entry
+macro index,pager           c "<change-folder>?<toggle-mailboxes>"
+macro index,pager           >m "<tag-prefix><save-message>?<toggle-mailboxes>"
+macro index,pager           >c "<tag-prefix><copy-message>?<toggle-mailboxes>"
+macro compose               >a "<attach-message>?<toggle-mailboxes>"
+macro index,pager           >SS "<shell-escape>operations sync-mail<enter><change-folder>!<enter>"
+
+# Sidebar
+set sleep_time              = 0
+set sidebar_visible         = yes
+set sidebar_format          = " %B%?F? [%F]?%* %?N?%N/?%?S?%S? "
+set sidebar_short_path
+set sidebar_delim_chars     = "/"
+set sidebar_folder_indent
+set sidebar_indent_string   = "  "
+set sidebar_width           = 34
+set sidebar_divider_char    = '│'
+set mail_check_stats
+bind index,pager            J sidebar-next
+bind index,pager            K sidebar-prev
+bind index,pager            L sidebar-open
+bind index,pager            B sidebar-toggle-visible
+
+# Index
+set date_format             = "%Y-%m-%d %H:%M:%S"
+set index_format            = "%3C [ %Z ]  %D  %-20.20F  %s (%-4.4c)"
+set sort                    = "threads"
+set sort_aux                = "reverse-date"
+
+# Hide help
+set help                    = "yes"
+
+# Colorize index
+color normal                default default
+color tilde                 color2  color0
+color index                 color14 default "~b \".*\" !~N !~O !~U !~F !~T !~D"
+color indicator             color6  color5
+color index                 color15 default ~N
+color index                 color15 default ~O
+color index                 color15 default ~U
+color index                 color10 default ~F
+color index                 color11 default ~T
+color index                 color9  default ~D
+color index_number          color15 default
+color index_size            color8  default
+color body                  color9  default [\-\.+_a-zA-Z0-9]+@[\-\.a-zA-Z0-9]+
+color body                  color12 default (https?|ftp)://[\-\.,/%~_:?&=\#a-zA-Z0-9]+
+color status                color6  color5
+color message               color14 default
+color attachment            color14 color5
+color error                 color9  default
+color tree                  color13 default
+color search                color6  color5
+color hdrdefault            color30 color6
+color header                color0  color2 '^date:'
+color header                color0  color2 '^(to|cc|bcc):'
+color header                color0  color2 '^from:'
+color header                color0  color2 '^subject:'
+color header                color0  color2 '^user-agent:'
+color header                color0  color2 '^reply-to:'
+color quoted                color14 color2
+
+# mailcap
+set mailcap_path            = "~/.mutt/mailcap"
+auto_view                   = text/plain
+alternative_order           = text/plain text/enriched text/html
+# open message in html view
+bind index,pager            V noop
+macro index,pager           V "<view-attachments><search>html<enter><view-mailcap>"
+
+# Pager
+set pager_index_lines       = 10
+set pager_context           = 3
+set tilde
+unset markers
+
+# status bar
+set status_chars            = " *%A"
+set status_format           = " %f (%m messages%?n?, %n new?%?d?, %d to delete?%?t?, %t tagged?)%> %?p?(%p postponed)? %P "
+
+# headers
+set edit_headers            = yes
+unset use_domain
+unset user_agent
+unmy_hdr *
+my_hdr X-Info: Keep It Simple, Stupid.
+my_hdr X-Operating-System: `uname -s`, kernel `uname -r`
+my_hdr X-Message-Flag: WARNING: you are using an inferior email client
+my_hdr User-Agent: Every email client sucks, this one just sucks less.
+
+set my_accf_0               = "/tmp/mutt-webmail-0-local.tld"
+set my_accf_1               = "/tmp/mutt-webmail-1-local.tld"
+source                      "[ ! -f $my_accf_0 ] && pass mail/muttrc/webmail-0-local.tld > $my_accf_0; cat $my_accf_0 |"
+source                      "[ ! -f $my_accf_1 ] && pass mail/muttrc/webmail-1-local.tld > $my_accf_1; cat $my_accf_1 |"
+source                      "$my_accf_0"
+macro index "\e1"           ":source $my_accf_0<enter><change-folder>!<enter>"
+macro index "\e2"           ":source $my_accf_1<enter><change-folder>!<enter>"

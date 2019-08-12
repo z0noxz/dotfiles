@@ -1,0 +1,13 @@
+#!/bin/sh
+
+args=" -p man: -l 30 $@"
+
+man="$(
+    man -k .                \
+    | dmenu_vtc${args}      \
+    | grep -oe '^[^(]*'     \
+)"
+
+[ "$man" = "" ] && exit 1
+
+echo "$man" | xargs -r man -Tpdf | zathura - &

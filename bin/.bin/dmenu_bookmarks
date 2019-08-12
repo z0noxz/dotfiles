@@ -1,0 +1,27 @@
+#!/bin/sh
+
+choice=""
+data=""
+filename="$1"; shift
+options=""
+args=" $@"
+
+[ ! -f "$filename" ] && exit 1
+
+# for each line, remove url (after last space) and append value to options
+# (while trimming the last blankspace of the value)
+while read -r line; do
+    if [ "${line#\#}" = "${line}" ] && [ "$line" != "" ]; then
+        data="$data$line\n"
+        text="${line%%${line##*\ }}"
+        options="$options${text%?}\n"
+    fi
+done < "$filename"
+
+# get url based on choice
+choice=$(printf "$options" | sort | dmenu_vtc${args})
+choice=$(printf "$data" | grep "$choice")
+choice="${choice##*\ }"
+
+# copy url to primary and clipboard
+printf "$choice" | xclip -i -sel p -f | xclip -i -sel c

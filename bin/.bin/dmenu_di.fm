@@ -1,0 +1,40 @@
+#!/bin/sh
+
+choice=""
+data=""
+key="$1"; shift
+options=""
+args=" $@"
+
+[ "$key" = "" ] && exit 1
+
+# download list of available channels
+data="$(
+    curl -s "http://listen.di.fm/premium_high/"         \
+    | grep -Po "http://listen.*?pls"                    \
+)"
+options="$(
+    echo $data                                          \
+    | tr ' ' '\n'                                       \
+    | sed 's/^.*\/premium_high\/\(.*\).pls/\1/g'        \
+)"
+
+# get url based on choice
+choice=$(printf "$options" | sort | dmenu_vtc${args})
+choice=$(printf "$data" | grep "/$choice.pls")
+choice="${choice##*\ }"
+
+# exit if no station was picked
+[ "$choice" = "" ] && exit 0
+
+# make tmp
+tmp="$(mktemp /tmp/pls.XXXXXXXXXX)" && chmod 600 "$tmp" || exit 1
+
+# download channel playlist
+curl -s "$choice" | sed "s/\(File[0-9].*$\)/\1?$key/g" > "$tmp"
+
+# load playlist
+mpvc load "$tmp"
+
+# remove playlist after 60 seconds
+sleep 60 && rm "$tmp"

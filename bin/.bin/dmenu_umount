@@ -1,0 +1,37 @@
+#!/bin/sh
+
+# get partitions mounted through fstab (exclude these)
+exclude="$(
+    sed -e '/^$/d' -e '/^#.*$/d' /etc/fstab     \
+    | awk '
+    BEGIN {
+	C = 0;
+	printf "\\ \\("
+    } END {
+        printf "\\)$"
+    } C++ > 1 {
+        printf "\\|"
+    } $2 ~ /^\/.*/ {
+        printf "%s",$2;
+    }'
+)"
+
+# get mounted partitions
+parts="$(
+    lsblk -lp                                   \
+    | grep "part /"                             \
+    | grep -v "$exclude"                        \
+    | awk '{print $1, "(" $4 ")", "on", $7}'    \
+)"
+[ "$parts" = "" ] && exit
+
+# choose a partition to unmount
+args=" -i -p unmount:"
+part="$(
+    echo "$parts"                               \
+    | dmenu_vtc${args}                          \
+    | awk '{print $1}'                          \
+)"
+[ "$part" = "" ] && exit
+
+sudo umount $part && ztatusc notify "'$part' unmounted"

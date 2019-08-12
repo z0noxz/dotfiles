@@ -1,0 +1,24 @@
+#!/bin/sh
+
+for vt in $HOME/.themes/*.vt
+do
+    _r=""; _g=""; _b=""
+    _n=${vt##*/}
+    _n=${_n%%.*}
+    _f=/usr/share/kbd/vtrgb/vtrgb.$_n
+
+    set -- $(sed -e 's/#.*$//' -e '/^$/d' "$vt")
+    for line
+    do
+        _r="$_r,$(echo $line | cut -c1-2 | xargs -I . printf '%d' '0x.')"
+        _g="$_g,$(echo $line | cut -c3-4 | xargs -I . printf '%d' '0x.')"
+        _b="$_b,$(echo $line | cut -c5-6 | xargs -I . printf '%d' '0x.')"
+    done
+
+    {
+        echo "[ -f \"$_f\" ] && rm -f \"$_f\""
+        echo "echo \"${_r#*,}\" >> \"$_f\""
+        echo "echo \"${_g#*,}\" >> \"$_f\""
+        echo "echo \"${_b#*,}\" >> \"$_f\""
+    } | sudo
+done

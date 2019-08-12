@@ -1,0 +1,22 @@
+defaults
+protocol        smtp
+auth            on
+tls             on
+tls_starttls    on
+tls_trust_file  /etc/ssl/certs/ca-certificates.crt
+
+account webmail-0
+from            ::{0;username}
+user            ::{0;username}
+passwordeval    pass mail/::{0;username}/password
+host            ::{0;host}
+port            ::{0;smtp-port}
+
+account webmail-1
+from            ::{1;username}
+user            ::{1;username}
+passwordeval    pass mail/::{1;username}/password
+host            ::{1;host}
+port            ::{1;smtp-port}
+
+account default : webmail-0

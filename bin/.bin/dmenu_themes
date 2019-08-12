@@ -1,0 +1,8 @@
+#!/bin/sh
+
+args=" -p theme: -l 20"
+
+theme="$(ttyc list | dmenu_vtc${args})"
+sudo ttyc "$theme"                          \
+    && echo $(killall -USR1 st 2>/dev/null) \
+    && echo quit > /tmp/dwm.fifo

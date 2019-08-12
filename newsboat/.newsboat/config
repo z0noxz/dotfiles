@@ -1,0 +1,44 @@
+# https://github.com/newsboat/newsboat/blob/master/src/configcontainer.cpp
+browser                     "dmenu_url_open"
+cache-file                  ".data/newsboat/cache.db"
+history-limit               0
+datetime-format             "%Y-%m-%d %H:%M"
+articlelist-format          " %4i  %D %?T? %-20T ? %t"
+feedlist-format             " %4i  %n %11u %t"
+articlelist-title-format    " %T (%u unread, %t total) - %U"
+feedlist-title-format       " Feeds (%u unread, %t total)"
+itemview-title-format       " %T (%u unread, %t total)"
+swap-title-and-hints        yes
+show-keymap-hint            no
+
+bind-key j down
+bind-key k up
+bind-key j next articlelist
+bind-key k prev articlelist
+bind-key J next-feed articlelist
+bind-key K prev-feed articlelist
+bind-key g home
+bind-key G end
+bind-key d pagedown
+bind-key u pageup
+bind-key l open
+bind-key h quit
+bind-key a toggle-article-read
+bind-key n next-unread
+bind-key N prev-unread
+bind-key D pb-download
+bind-key U show-urls
+bind-key x pb-delete
+
+#     element               fg      bg      attr
+# ----------------------------------------------
+color background            default default
+color info                  black   color5  bold
+color listnormal            color14 default
+color listfocus             color14 color5
+color listnormal_unread     blue    default bold
+color listfocus_unread      blue    color5  bold
+color article               color14 default
+
+
+macro p set browser "dmenu_url_open"; open-in-browser

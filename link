@@ -1,0 +1,90 @@
+#!/bin/sh
+
+[ $# -ne 2 ] && printf 'usage: link [status|install|remove] MODULE\n'
+[ "$1" = "" ] && printf '\nmodules:\n'
+
+self="$(realpath $0 --relative-to="$HOME")"
+selfpath="${self%%/*}"
+
+apply_action() {
+    local readonly dir="$1"
+    local readonly into="$2"
+    local readonly action="$3"
+    local readonly path="$HOME$([ "$into" != "" ] && echo "/$into")"
+
+    [ "$into" = "" ] && printf "$(tput bold)%s:$(tput sgr0)\n" "${dir##*/}"
+    for subdir in `find $dir -maxdepth 1`; do
+        local _name="${subdir##*/}"
+        local _link="$path/$_name"
+        local _target="$(realpath "$subdir" --relative-to="$path")"
+
+        # ignore container
+        [ "$subdir" = "$dir" ] && continue
+
+        case "$_name" in
+        # special folders
+        .config|.ssh)
+            [ "$into" = "" ] && apply_action "$subdir" "$_name" "$action"
+            ;;
+        *)
+            # check if link path is unoccupied, and then create link
+            # NOT INSTALLED
+            if [ ! -d "$_link" ] && [ ! -f "$_link" ]; then
+                case "$action" in
+                status|remove)
+                    printf                                                  \
+                        "[$(tput setaf 3)$(tput bold)m$(tput sgr0)] %s\n"   \
+                        "'$_link' ->"
+                    ;;
+                install)
+                    printf                                                  \
+                        "[$(tput setaf 2)$(tput bold)+$(tput sgr0)] %s\n"   \
+                        "$(ln -vs "$_target" "$_link" 2>&1)"
+                    ;;
+                esac
+            # check if the path is already occupied, by a non link
+            # ERROR
+            elif [ ! -h "$_link" ]; then
+                printf                                                      \
+                    "$(tput setaf 1)$(tput bold)%s$(tput sgr0)\n"           \
+                    "[E] '$_link' is already occupied"
+            # check if the link is already created
+            # INSTALLED
+            elif [ "$(readlink "$_link")" = "$_target" ]; then
+                case "$action" in
+                status|install)
+                    printf                                                  \
+                        "[$(tput setaf 6)$(tput bold)i$(tput sgr0)] %s\n"   \
+                        "'$_link' -> '$_target'"
+                    ;;
+                remove)
+                    printf                                                  \
+                        "[$(tput setaf 1)$(tput bold)-$(tput sgr0)] %s\n"   \
+                        "$(rm -v "$_link" 2>&1)"
+                    ;;
+                esac
+            # check if link is pointing at wrong target
+            # ERROR
+            elif [ "$(readlink "$_link")" != "$_target" ]; then
+                printf                                                      \
+                    "$(tput setaf 1)$(tput bold)%s$(tput sgr0)\n"           \
+                    "[E] '$_link' -> '"$(readlink "$_link")"'"
+            fi
+            ;;
+        esac
+    done
+    [ "$into" = "" ] && echo
+}
+
+for dir in `find $HOME/$selfpath/* -maxdepth 0 -type d`; do
+    _name="${dir##*/}"
+    if [ "$_name" != ".exclude" ] && [ "$_name" != "all" ]; then
+        [ "$1" = "" ] && echo "  $_name" && continue
+        [ "$2" != "all" ] && [ "$2" != "$_name" ] && continue
+        case "$1" in
+        status)     apply_action "$dir" "" "status" ;;
+        install)    apply_action "$dir" "" "install" ;;
+        remove)     apply_action "$dir" "" "remove";;
+        esac
+    fi
+done

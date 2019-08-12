@@ -1,0 +1,12 @@
+#!/bin/sh
+
+for i in $(seq 1 16)
+do
+    awk -F, "
+    BEGIN {OFS = FS}
+    {
+        printf \"%02x\",\$$i
+    }" $1
+    echo
+done
+

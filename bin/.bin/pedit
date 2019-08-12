@@ -1,0 +1,16 @@
+#!/bin/sh
+
+# get current tty
+tty="/dev/$(ps -o tty= -p $$)"
+
+# create tmp file
+tmp="$(mktemp)"
+
+# cat stdin to tmp file
+[ ! -t 0 ] && cat > "$tmp"
+
+# open vim in current tty, and cat to stdout when done
+${EDITOR} "$tmp" < "$tty" > "$tty" && cat "$tmp"
+
+# remove tmp file
+rm "$tmp"

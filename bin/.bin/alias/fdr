@@ -1,0 +1,14 @@
+#!/bin/sh
+
+_dir="$(realpath "${1:-$PWD}")"
+_dirs="$_dir"
+
+while [ -d "$_dir" ]; do
+     [ "$_dir" != '/' ] && _dir="$(dirname "$_dir")" || break
+     _dirs="$_dir\n$_dirs"
+done
+
+cd "$(echo "$_dirs" | fzf-tmux --tac)"
+
+unset _dir
+unset _dirs

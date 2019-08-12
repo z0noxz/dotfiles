@@ -1,0 +1,4 @@
+#!/bin/sh
+while true; do
+    /usr/local/bin/dwm 2>"$HOME/.data/dwm/dwm.log"
+done

@@ -1,0 +1,40 @@
+#!/bin/sh
+
+options="copy\nmpv\nwget\nyt-dl\nsurf\nvimb\nw3m"
+url="$1"; shift
+visual="$url"
+
+if [ "${#visual}" -gt 30 ]; then
+    visual="$(expr substr $url 1 20)...$(expr substr $url $((${#url} -6)) 7)"
+fi
+
+args=" $@ -i -p $visual"
+
+case "$(printf "$options" | dmenu_vtc${args})" in
+copy)
+    printf "$url"                       \
+    | xclip -selection primary -f       \
+    | xclip -selection clipboard & ;;
+mpv)
+    mpvc load "$url" ;;
+yt-dl-video)
+    youtube-dl                                          \
+        -f webm                                         \
+        -o "$HOME/downloads/%(title)s-%(id)s.%(ext)s"   \
+        "$url" >/dev/null 2>&1 & ;;
+yt-dl-audio)
+    youtube-dl                                          \
+        -extract-audio                                  \
+        --audio-format vorbis                           \
+        --audio-quality 0                               \
+        -o "$HOME/downloads/%(title)s-%(id)s.%(ext)s"   \
+        "$url" >/dev/null 2>&1 & ;;
+wget)
+    wget "$url" >/dev/null 2>&1 & ;;
+surf)
+    surf "$url" >/dev/null 2>&1 & ;;
+vimb)
+    vimb-tabbed "$url" >/dev/null 2>&1 & ;;
+w3m)
+    w3m "$url" >/dev/null 2>&1 & ;;
+esac

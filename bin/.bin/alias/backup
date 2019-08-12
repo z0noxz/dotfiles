@@ -1,0 +1,33 @@
+#!/bin/sh
+
+echo -n "Do you wish to backup '$HOME' (y/N)? "
+read answer && [ "$answer" = "${answer#[Yy]}" ] && return
+
+select _repo in local remote
+do
+    case "$_repo" in
+    local)
+        borg create                                     \
+            --stats                                     \
+            --progress                                  \
+            --compression lz4                           \
+            --exclude "$HOME/mnt"                       \
+            --exclude "$HOME/downloads"                 \
+            --exclude "$HOME/.cache"                    \
+            ::{user}-{now} "$HOME"
+        return ;;
+    remote)
+        borg create                                     \
+            --stats                                     \
+            --progress                                  \
+            --compression lz4                           \
+            --exclude "$HOME/mnt"                       \
+            --exclude "$HOME/downloads"                 \
+            --exclude "$HOME/.cache"                    \
+            backup:void42::{user}-{now} "$HOME"
+        return ;;
+    *)
+        echo "select a valid option"
+        ;;
+    esac
+done

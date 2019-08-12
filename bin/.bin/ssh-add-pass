@@ -1,0 +1,15 @@
+#!/bin/sh
+
+if [ $# -ne 1 ] ; then
+    echo "Usage: ssh-add-pass keyfile"
+    exit 1
+fi
+
+_KEYFILE="$1"
+_PASS="$(cat - | sed -e "s|\"|\\\"|g")"
+
+expect -c "                         \
+    spawn ssh-add $_KEYFILE;        \
+    expect -re \".*passphrase.*\";  \
+    send -- \"$_PASS\r\";           \
+    expect eof"

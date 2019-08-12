@@ -1,0 +1,41 @@
+IMAPStore       webmail-0-remote
+Host            ::{0;host}
+Port            ::{0;imap-port}
+User            ::{0;username}
+PassCmd         "pass mail/::{0;username}/password"
+SSLType         IMAPS
+CertificateFile /etc/ssl/certs/ca-certificates.crt
+
+MaildirStore    webmail-0-local
+Path            ~/mail/webmail-0-local/
+Inbox           ~/mail/webmail-0-local/INBOX
+Subfolders      Verbatim
+
+Channel webmail-0
+Master          :webmail-0-remote:
+Slave           :webmail-0-local:
+Create          Both
+Expunge         Both
+Patterns        *
+SyncState       *
+
+IMAPStore       webmail-1-remote
+Host            ::{1;host}
+Port            ::{1;imap-port}
+User            ::{1;username}
+PassCmd         "pass mail/::{1;username}/password"
+SSLType         IMAPS
+CertificateFile /etc/ssl/certs/ca-certificates.crt
+
+MaildirStore    webmail-1-local
+Path            ~/mail/webmail-1-local/
+Inbox           ~/mail/webmail-1-local/INBOX
+Subfolders      Verbatim
+
+Channel webmail-1
+Master          :webmail-1-remote:
+Slave           :webmail-1-local:
+Create          Both
+Expunge         Both
+Patterns        *
+SyncState       *

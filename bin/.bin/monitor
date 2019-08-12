@@ -1,0 +1,70 @@
+#!/bin/sh
+
+hdmi_status="/tmp/.hdmi_status"
+hdmi="/sys/class/drm/card0-HDMI-A-2/status"
+lvds="/sys/class/drm/card0-LVDS-1/enabled"
+
+print_help() {
+    echo "Usage: ${0##*/} ACTION\n"
+    echo "ACTIONS:"
+    echo " setup          normal setup."
+    echo " daemon         start monitor daemon."
+    echo " force-lvds     enable lvds forcefully."
+    echo " help           print this help message."
+}
+
+install_udev_rule() {
+    if [ "$(id -u)" = 0 ]; then
+        rule=""
+        rule="${rule}ACTION==\"change\", "
+        rule="${rule}SUBSYSTEM==\"drm\", "
+        rule="${rule}ENV{HOTPLUG}==\"1\", "
+        rule="${rule}RUN+=\"/bin/sh -c 'cat ${hdmi} > ${hdmi_status}'\""
+        mkdir -p /etc/udev/rules.d
+        printf "$rule" > /etc/udev/rules.d/95-hotplug-drm.rules
+    else
+        echo "must run as root"
+    fi
+}
+
+enable_lvds() {
+    xrandr --output LVDS1 --mode 1280x800 --rate 60
+    xrandr --output HDMI2 --off
+}
+
+enable_hdmi() {
+    # create new resolution for 21:9 (under 160 mhz bandwidth)
+    xrandr --delmode HDMI2 2560x1080_43
+    xrandr --rmmode 2560x1080_43
+    xrandr --newmode "2560x1080_43" \
+    159.94  2560 2688 2960 3360  1080 1081 1084 1107  -HSync +Vsync
+    xrandr --addmode HDMI2 2560x1080_43
+
+    xrandr --output HDMI2 --mode 2560x1080_43 --rate 43.0
+    xrandr --output LVDS1 --off
+}
+
+case "$1" in
+force-lvds)
+    if [ "$(cat ${lvds})" != "enabled" ]; then
+        enable_lvds
+    fi
+;;
+setup)
+    if [ "$(cat ${hdmi})" = "connected" ]; then
+        enable_hdmi
+    else
+        enable_lvds
+    fi
+;;
+daemon)
+    [ ! -f ${hdmi_status} ] && touch ${hdmi_status}
+    echo "${hdmi_status}" | entr -n -p "${0}" setup
+;;
+install-udev-rule)
+    install_udev_rule
+;;
+*)
+    print_help
+;;
+esac

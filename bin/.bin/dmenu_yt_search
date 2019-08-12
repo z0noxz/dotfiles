@@ -1,0 +1,58 @@
+#!/bin/sh
+
+args=" -i -l 20 -p ▶ -sb #ca0200 -sf #ffffff -nb #000000 -nf #ffffff"
+search_phrase="$(echo -n | dmenu_vtc${args}                                 \
+    | sed 's/\ /+/g'                                                        \
+    | hexdump -v -e '/1 "%02x"'                                             \
+    | sed 's/\(..\)/%\1/g')"
+
+search_results="$(curl 2>/dev/null                                          \
+    "https://www.youtube.com/results?search_query=$search_phrase"           \
+    | sed 's/<a /\n<a /g')"
+search_data="$(echo $search_results                                         \
+    | grep -o '<a href=\"/watch?v=[^>]*>'                                   \
+    | grep -v 'list='                                                       \
+    | sed -r "s/^<a(.*?)href=\"\/watch\?v=([^\"]+)\"(.*?)title=\"([^\"]+)\"(.*?)>/\2;\4/")"
+time=""
+line=""
+data=""
+options=""
+nr=""
+i="0"
+id=""
+name=""
+
+[ "$search_data" = "" ] && exit 0
+
+while :; do
+    line="${search_data%%
+*}"
+    i="$((i+1))"
+    nr="$(printf "%02d" "$i")"
+    id="${line%%;*}"
+    name="${line#*;}"
+    data="$data$nr $id\n"
+    time="$(echo "$search_results" | grep -B 1 -- "$id" 2>/dev/null \
+        | grep "video-time" 2>/dev/null                                     \
+        | sed -r "s/<span[^>]*>([^<]*).*/\1/")"
+
+    if [ "$time" = "" ]; then
+        time="LIVE!"
+    elif [ "$(echo "$time" | grep -o ':' | wc -l)" != "2" ]; then
+        time="$(date --date="00:$time" +"%M:%S")"
+    else
+        time="$(date --date="$time" +"%H:%M:%S")"
+    fi
+
+    options="$options$nr [$time] "$(echo "$name" | recode html..unicode)"\n"
+    search_data="${search_data#*
+}"
+    if [ "$line" = "$search_data" ]; then break; fi
+done
+
+choice="$(echo $options | sed '/^\s*$/d' | sort | dmenu_vtc${args})"
+
+[ "$choice" = "" ] && exit 0
+
+choice="$(printf "$data" | grep ^${choice%% *})"
+dmenu_url_open "https://www.youtube.com/watch?v=${choice#* }"

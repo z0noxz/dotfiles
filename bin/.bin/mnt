@@ -1,0 +1,82 @@
+#!/bin/sh
+
+_usage="
+usage:
+ mnt [options]
+ mnt [NAME]
+
+Wrapper for managing named mounts.
+
+Options:
+ -h, --help     shows this help text
+ -l, --list     list current mounts formated as a table
+
+Name:
+ NAME           tries to mount named mount
+
+Other:
+ if no option is specified 'fzf' is used to specify named mount
+"
+
+# <name>|<command>|<source>|<mountpoint>
+_table="
+shared|sshfs|nas:/strg/shared|~/mnt/shr
+sources|sshfs|nas:/strg/src|~/mnt/src
+"
+
+_lines() {
+    local _tmp="${_table}"
+    local _fmt='{print $0}'
+    local _opt="$1"; shift
+
+    while :; do
+        line="${_tmp%%
+*}"
+        _tmp="${_tmp#*
+}"
+        _id="${line%%|*}"
+        [ "$line" = "$_tmp" ] && break
+        [ "$line" = "" ] && continue
+        [ "$1" != "" ] && [ "$@" != "$_id" ] && continue
+        case "$_opt" in
+        'name')     _fmt='{print $1}'                                       ;;
+        'src')      _fmt='{print $3}'                                       ;;
+        'target')   _fmt='{print $4}'                                       ;;
+        'cmd')      _fmt='{print $2, $3, $4}'                               ;;
+        'state')
+            printf '[%-1s] %s\n'                                            \
+                "$(grep -qs "^$(_lines src $_id)" /proc/mounts && echo '*')"\
+                "$(_lines name $_id)"
+            continue
+        ;;
+        esac
+        echo "${line}" | awk -F '|' "$_fmt"
+    done
+}
+
+[ "$#" -gt 1 ] && echo "$_usage" && return
+
+case "$1" in
+--list|-l)
+    /bin/column -t /proc/mounts
+    ;;
+--help|-h)
+    echo "$_usage"
+    ;;
+'')
+    echo "$(_lines state)"                                                  \
+    | fzf --multi --layout=reverse-list                                     \
+    | cut -c 4-                                                             \
+    | xargs -r -n 1 mnt
+    ;;
+*)
+    echo "$(_lines name)" | grep "^$1$" 2>&1 >/dev/null || return
+
+    if grep -qs "^$(_lines src $1)" /proc/mounts
+    then
+        echo sudo /bin/umount "$(_lines target "$1")" | ${SHELL:-"/bin/sh"}
+    else
+        echo "$(_lines cmd "$1")" | ${SHELL:-"/bin/sh"}
+    fi
+    ;;
+esac

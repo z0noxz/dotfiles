@@ -1,0 +1,45 @@
+#!/bin/sh
+
+while read file; do
+    path="$(readlink -f "$file")"
+    case "$1" in
+ 
+    # set as wallpaper
+    'w')
+        if [ "${path#*.ff.gz}" != "$path" ]; then
+            cp "$path" "$HOME/.wallpaper.ff.gz"
+        else
+            tmpfile="$(mktemp /tmp/sxiv-wallpaper.XXXXXX)"
+            convert "$path" png:- | png2ff | gzip -c > "$tmpfile" && \
+                mv "$tmpfile" "$HOME/.wallpaper.ff.gz"
+        fi
+        swall "$HOME/.wallpaper.ff.gz"
+    ;;
+
+    # rotate 90 degrees clockwise
+    'r')
+        if [ "${path#*.ff.gz}" != "$path" ]; then
+            tmpfile="$(mktemp /tmp/sxiv-rotate.XXXXXX)"
+            gunzip -c < "$path" | ff2png | \
+                convert png:- -rotate 90 png:- | \
+                png2ff | gzip -c > "$tmpfile" && \
+                mv "$tmpfile" "$path"
+        else
+            convert -rotate 90 "$path" "$path"
+        fi
+    ;;
+
+    # rotate 90 degrees counter-clockwise
+    'R')
+        if [ "${path#*.ff.gz}" != "$path" ]; then
+            tmpfile="$(mktemp /tmp/sxiv-rotate.XXXXXX)"
+            gunzip -c < "$path" | ff2png | \
+                convert png:- -rotate -90 png:- | \
+                png2ff | gzip -c > "$tmpfile" && \
+            mv "$tmpfile" "$path"
+        else
+            convert -rotate -90 "$path" "$path"
+        fi
+    ;;
+    esac
+done

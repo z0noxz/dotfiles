@@ -1,0 +1,42 @@
+#!/bin/sh
+
+raw="$(sed -e 's/shift + \([a-z]\)$/\U\1/g' ~/.config/sxhkd/sxhkdrc | awk '
+BEGIN {
+    first   = 1;
+    desc    = "";
+    len     = 0;
+}
+desc!="" {
+    printf "|%s|%s|\n", $0, desc;
+    desc    = "";
+}
+match($0, /# ---([^-]*)/, a) {
+    if (!first) printf "\n";
+    printf "#%s#\n", substr($0, 6, RLENGTH - 5);
+    first   = 0;
+}
+/# :.*/ {
+    desc    = substr($0, 4);
+}
+{
+    if (length > len) len = length;
+}
+END {
+    print len;
+}
+')"
+length="$(echo "$raw" | sed '$!d')"
+
+echo "$raw"                                     \
+| sed '$d'                                      \
+| pr                                            \
+    -t                                          \
+    -"$((($(tput cols)+$length-1)/$length))"    \
+    -w "$(tput cols)"                           \
+| sed                                           \
+    -e "s/|\([^#|]*\)|\([^|]*\)|/`printf        \
+        "\033[38;1;255m"`\1`printf              \
+        "\033[0m"` \2  /g"                      \
+    -e "s/#\([^#]*\)#/`printf                   \
+        "\033[48;5;255m\033[30m"`\1`printf      \
+        "\033[0m  "`/g"

@@ -1,0 +1,59 @@
+#!/bin/sh
+
+readonly dmz_name="noxz.tech"
+readonly lan_name="lanprox.system.local"
+readonly dmz_port="9949"
+readonly lan_port="9950"
+readonly dmz_pid="$(pgrep -a ssh | grep "ssh -g -f -N -D $dmz_port $dmz_name" | awk '{print $1}')"
+readonly lan_pid="$(pgrep -a ssh | grep "ssh -g -f -N -D $lan_port $lan_name" | awk '{print $1}')"
+
+check_proxy() {
+    if [ "$lan_pid" != "" ] && [ "$dmz_pid" != "" ]; then
+        printf "[$(tput setaf 6)$(tput bold)+$(tput sgr0)] %s\n" \
+            "proxy is opened at 127.0.0.1:$lan_port"
+        return 0
+    else
+        printf "[$(tput setaf 1)$(tput bold)-$(tput sgr0)] %s\n" \
+            "proxy is closed"
+        return 1
+    fi
+}
+
+kill_proxy() {
+    [ "$lan_pid" != "" ] && kill "$lan_pid"
+    [ "$dmz_pid" != "" ] && kill "$dmz_pid"
+}
+
+start_proxy() {
+    printf "[$(tput setaf 6)$(tput bold)*$(tput sgr0)] %s\n" \
+        "(1/2) connecting to noxz.tech..."
+    ssh -g -f -N -D "$dmz_port" "$dmz_name" -p 9922
+    [ "$?" != "0" ] && return 1
+
+    printf "\n[$(tput setaf 6)$(tput bold)*$(tput sgr0)] %s\n" \
+        "(2/2) connecting to lanprox.system.local..."
+    ssh -g -f -N -D "$lan_port" "$lan_name" -o ProxyCommand="ncat --proxy 127.0.0.1:$dmz_port --proxy-type socks4 %h %p"
+    [ "$?" != "0" ] && return 1
+
+    printf "\n[$(tput setaf 2)$(tput bold)+$(tput sgr0)] %s\n" \
+        "proxy successfully opened at 127.0.0.1:$lan_port"
+
+    return 0
+
+    ## Usage examples:
+    #
+    # setup the proxy for vimb
+    # # export http_proxy='socks4://localhost:9950'
+    #
+    # start ksh through the proxy
+    # # proxychains4 -q -f /etc/proxychains.noxz.conf ksh
+}
+
+case "$1" in
+    ""|status) check_proxy ;;
+    start) kill_proxy; start_proxy;;
+    stop) kill_proxy;;
+    string) [ "$lan_pid" != "" ] && [ "$dmz_pid" != "" ] && echo\
+      "/bin/ncat --proxy 127.0.0.1:$lan_port --proxy-type socks4 %h %p";;
+    *) echo "usage: "$0" status|start|stop|string"
+esac

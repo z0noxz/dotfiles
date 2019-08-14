@@ -1,6 +1,6 @@
 #!/bin/sh
 
-[ $# -ne 2 ] && printf 'usage: link status|install|remove MODULE|all\n'
+[ $# -ne 2 ] && printf 'usage: link status|install|remove CONTAINER|all\n'
 [ "$1" = "" ] && printf '\nmodules:\n'
 
 self="$(realpath $0 --relative-to="$HOME")"

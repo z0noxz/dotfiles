@@ -1,11 +1,22 @@
 #!/bin/sh
 
+LENGTH=$((128 < $(tput cols) ? 128 : $(tput cols)))
+LINE="$(printf "%0$(echo $LENGTH)d\n" 0|tr '0' '=')"
+
+echo
+echo file system disk space usage
+echo $LINE
+ssh backup -t df 2>/dev/null
+echo
+
 set -- $(ls ~/.password-store/backup/borg/nas); for repo
 do
     export BORG_REPO="backup:$repo"
     export BORG_PASSCOMMAND="pass backup/borg/nas/$repo/passphrase"
 
     echo "status: $repo"
-    /bin/borg list
+    echo $LINE
+    /bin/borg info
+    /bin/borg list --last 6
     echo
 done

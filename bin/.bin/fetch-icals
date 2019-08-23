@@ -1,0 +1,72 @@
+#!/bin/sh
+
+_cal=$HOME/.data/calcurse/online
+_tmp=$(mktemp /tmp/.cal.XXXXXX)
+_i=0
+_e=0
+
+# loop through ical urls at line breaks
+set -- $(pass lists/icals | sed -e 's/ /__space__/g')
+for cal
+do
+    # extract name and link from 'name::url'
+    _name="$(echo ${cal%%::*} | sed -e 's/__space__/ /g')"
+    _link="${cal##*::}"
+
+    # download ical and strip header and footer
+    wget -q -O- "$_link" | sed -e '1,/VEVENT/{/VEVENT/p;d}' -e '$d' >> $_tmp
+
+    # get current event count
+    _j=$(grep -o '^BEGIN:VEVENT' $_tmp | wc -l)
+
+    # check if new events were added
+    if [ $_i -ne $_j ]
+    then
+        printf '[+] %sfetched %d new events: %s%s\n'                        \
+            "$(tput setaf 10)"                                              \
+            "$((_j - _i))"                                                  \
+            "$_name"                                                        \
+            "$(tput sgr0)"
+    else
+        printf '[-] %sfailed to fetch new events: %s%s\n'                   \
+            "$(tput setaf 9)"                                               \
+            "$_name"                                                        \
+            "$(tput sgr0)"
+        _e=$((e + 1))
+    fi
+
+    # set new count
+    _i=$_j
+done
+
+# add header and footer
+printf '%s\n%s\n%s\n%s'                                                     \
+    "BEGIN:VCALENDAR"                                                       \
+    "VERSION:2.0"                                                           \
+    "$(cat $_tmp)"                                                          \
+    "END:VCALENDAR" > $_tmp
+
+# ask to continue on error count > 0
+if [ $_e -gt 0 ]
+then
+    printf '%d calendars failed to sync. Do you want to continue (y/N)? '   \
+        "$_e"
+    read answer && [ "$answer" = "${answer#[Yy]}" ] && return
+fi
+
+# clear calendar
+> $_cal
+
+# import from tmp
+calcurse -c $_cal -i $_tmp
+
+# remove duplicates if existing
+uniq $_cal > $_tmp
+cat $_tmp > $_cal
+
+# clean up
+rm $_tmp
+
+
+
+

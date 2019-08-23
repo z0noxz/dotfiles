@@ -9,12 +9,29 @@ _e=0
 set -- $(pass lists/icals | sed -e 's/ /__space__/g')
 for cal
 do
-    # extract name and link from 'name::url'
-    _name="$(echo ${cal%%::*} | sed -e 's/__space__/ /g')"
+    # reset placeholders for space
+    cal="$(echo $cal | sed -e 's/__space__/ /g')"
+
+    # extract name and link from 'name::[authcmd]url'
+    _name="${cal%%::*}"
     _link="${cal##*::}"
 
+    # extract user and password command if existing
+    _user="$(echo "$_link" | grep -o '^\[[^]]*\]' | sed 's:^.\(.*\).$:\1:')"
+
+    if [ "$_user" != "" ]
+    then
+        curl                                                                \
+            --silent "${_link##*]}"                                         \
+            --user "$(eval "$_user")"                                       \
+        | sed -e '1,/VEVENT/{/VEVENT/p;d}' -e '$d' >> $_tmp
+    else
+        curl                                                                \
+            --silent "$_link"                                               \
+        | sed -e '1,/VEVENT/{/VEVENT/p;d}' -e '$d' >> $_tmp
+    fi
+
     # download ical and strip header and footer
-    wget -q -O- "$_link" | sed -e '1,/VEVENT/{/VEVENT/p;d}' -e '$d' >> $_tmp
 
     # get current event count
     _j=$(grep -o '^BEGIN:VEVENT' $_tmp | wc -l)

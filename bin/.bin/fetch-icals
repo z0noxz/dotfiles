@@ -39,14 +39,16 @@ do
     # check if new events were added
     if [ $_i -ne $_j ]
     then
-        printf '[+] %sfetched %d new events: %s%s\n'                        \
+        printf '[+] %sfetched %d new events: %s%s%s\n'                      \
             "$(tput setaf 10)"                                              \
             "$((_j - _i))"                                                  \
+            "$(tput setaf 15)"                                              \
             "$_name"                                                        \
             "$(tput sgr0)"
     else
-        printf '[-] %sfailed to fetch new events: %s%s\n'                   \
+        printf '[-] %sfailed to fetch new events: %s%s%s\n'                 \
             "$(tput setaf 9)"                                               \
+            "$(tput setaf 15)"                                              \
             "$_name"                                                        \
             "$(tput sgr0)"
         _e=$((e + 1))

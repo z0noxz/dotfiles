@@ -16,6 +16,5 @@ image/tiff;sxiv %s
 image/x-ong;sxiv %s
 
 # HTML
-#text/html;w3m %s; nametemplate=%s.html; needsterminal
+text/html;vimb %s >/dev/null 2>&1; nametemplate=%s.html;
 text/html;w3m -I %{charset} -T text/html; copiousoutput
-#text/html;w3m %s

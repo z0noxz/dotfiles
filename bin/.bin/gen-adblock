@@ -1,0 +1,35 @@
+#!/bin/sh
+
+_HOSTS_FILE="/etc/hosts.ads"
+_TEMP_FILE="$(mktemp /tmp/blocklist.XXXXXX)"
+
+set -- $(
+printf '%s'                                                                 \
+' https://adaway.org/hosts.txt'                                             \
+' http://adblock.mahakala.is/'                                              \
+' http://hosts-file.net/.%5Cad_servers.txt'                                 \
+' http://pgl.yoyo.org/adservers/serverlist.php'                             \
+    '?mimetype=plaintext&hostformat=hosts'                                  \
+' http://someonewhocares.org/hosts/hosts'                                   \
+' http://winhelp2002.mvps.org/hosts.txt'                                    \
+' http://www.malwaredomainlist.com/hostslist/hosts.txt'                     \
+| sed -e 's/^$//g'); for x
+do
+    printf "Getting '%s' domain list...\n" "$(echo $x | cut -d / -f 3)" 1>&2
+    curl -L -s "$x"                                                         \
+    | sed -e 's/\r//'                                                       \
+    | grep -v '#\|^::1\|[[:space:]]localhost$'                              \
+    | tr '\t' ' '                                                           \
+    | sed -e '/^ *$/d' -e 's/^[^\s]*\s//'                                   \
+    | sort >> $_TEMP_FILE
+done
+
+cat $_TEMP_FILE                                                             \
+| sed $'s/\r$//'                                                            \
+| sort                                                                      \
+| uniq                                                                      \
+| sed '/^$/d'                                                               \
+| awk -v "IP=0.0.0.0" '{sub(/\r$/,""); print IP" "$0}'                      \
+| sudo tee $_HOSTS_FILE > /dev/null
+
+rm $_TEMP_FILE

@@ -25,11 +25,9 @@ do
 done
 
 cat $_TEMP_FILE                                                             \
-| sed $'s/\r$//'                                                            \
 | sort                                                                      \
 | uniq                                                                      \
-| sed '/^$/d'                                                               \
-| awk -v "IP=0.0.0.0" '{sub(/\r$/,""); print IP" "$0}'                      \
+| awk -v "IP=0.0.0.0" '{print IP" "$0}'                                     \
 | sudo tee $_HOSTS_FILE > /dev/null
 
 rm $_TEMP_FILE

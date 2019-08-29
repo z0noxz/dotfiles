@@ -8,9 +8,14 @@ printf '%s'                                                                 \
 ' https://adaway.org/hosts.txt'                                             \
 ' http://adblock.mahakala.is/'                                              \
 ' http://hosts-file.net/.%5Cad_servers.txt'                                 \
+' https://mirror1.malwaredomains.com/files/justdomains'                     \
 ' http://pgl.yoyo.org/adservers/serverlist.php'                             \
     '?mimetype=plaintext&hostformat=hosts'                                  \
+' https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts'         \
+' https://s3.amazonaws.com/lists.disconnect.me/simple_tracking.txt'         \
+' https://s3.amazonaws.com/lists.disconnect.me/simple_ad.txt'               \
 ' http://someonewhocares.org/hosts/hosts'                                   \
+' http://sysctl.org/cameleon/hosts'                                         \
 ' http://winhelp2002.mvps.org/hosts.txt'                                    \
 ' http://www.malwaredomainlist.com/hostslist/hosts.txt'                     \
 | sed -e 's/^$//g'); for x
@@ -20,13 +25,14 @@ do
     | sed -e 's/\r//'                                                       \
     | grep -v '#\|^::1\|[[:space:]]localhost$'                              \
     | tr '\t' ' '                                                           \
-    | sed -e '/^ *$/d' -e 's/^[^\s]*\s//'                                   \
+    | sed -e '/^[\s]*$/d' -e 's/^[^\s]*\s//'                                \
     | sort >> $_TEMP_FILE
 done
 
 cat $_TEMP_FILE                                                             \
 | sort                                                                      \
 | uniq                                                                      \
+| sed -e '/^[\s]*$/d'                                                       \
 | awk -v "IP=0.0.0.0" '{print IP" "$0}'                                     \
 | sudo tee $_HOSTS_FILE > /dev/null
 

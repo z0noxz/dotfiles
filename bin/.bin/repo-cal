@@ -1,0 +1,312 @@
+#!/bin/sh
+#git log --no-merges --date='format:%Y-%m-%d %H:%M:%S' --pretty=format:"%at:%ad %s" --since="13 months"
+
+_MNAMES="Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec"
+_WNAMES="Mon Tue Wed Thu Fri Sat Sun"
+_NMORE="More"
+_NLESS="Less"
+_HCOLORS="ebedf0 efa6cf e667af e6399b 85004b"
+_8COLORS="2 12 10 3 1"
+_COLORS="240 28 34 40 46"
+_DSYMB="■"
+_WSWM=1
+_OUTPUT=""
+_AUTHOR=""
+_PATH=""
+_ALL=""
+_LOG=""
+
+git_log() {
+    cmd='git log --no-merges --pretty=format:"%at" --since="13 months"'
+    [ "$_AUTHOR" != "" ] && cmd="$cmd --author=\"$_AUTHOR\""
+    [ "$_ALL" != "" ] && cmd="$cmd --all"
+    if [ "$1" != "" ]
+    then
+        if [ -d "$1" ]
+        then
+            cmd="cd \"$1\" && $cmd"
+        else
+            printf 'error: %s: no such file or directory\n' "$1" 1>&2 && exit 1
+        fi
+    fi
+    echo $(eval "$cmd")
+}
+
+get_days() {
+    set -- $(echo $_LOG)
+    for epoch
+    do
+        date -d "@$epoch" +%Y:%j
+    done
+}
+
+get_day_count() {
+    get_days | uniq -c | sed -e 's/^\ *//g' -e 's/\ /:/g'
+}
+
+main() {
+    _TODAY=$(date +%j)
+    _DOW=$(date +%u)
+    _YEAR=$(date +%Y)
+    _LENGTH=$([ $(((_YEAR - 1) % 4)) -eq 0 ] && echo 366 || echo 365)
+    _FIRST=$((_TODAY - (53 * 7) - (_DOW % 7) - _WSWM))
+    _FMONTH=$(date -d "$_YEAR-01-01 $_FIRST day" +%m)
+    _FDOY=$(date -d "$_YEAR-01-01 $_FIRST day" +%j)
+    _MNAMES="$(echo $_MNAMES | cut -d ' ' -f $_FMONTH-) $_MNAMES"
+    [ $(tput colors) != 256 ] && _COLORS=$_8COLORS
+
+    [ "$_PATH" = "" ] && _PATH=$(pwd)
+    for d in $_PATH
+    do
+        d="$(realpath $d)"
+        _LOG=$(printf '%s\n%s' "$_LOG" "$(git_log $d)")
+        [ $? -ne 0 ] && printf 'error: %s failed to get log: %s\n'          \
+            "$0" "$d" && return
+    done
+
+    [ "$_LOG" = "" ] && printf '%s: got empty log, exiting...\n' "$0" && return
+
+    _DATA=$(get_day_count)
+    _COUNTS=$(echo "$_DATA" | sed -e 's/:.*$//g' | sort)
+    _CCOUNTS=$(echo "$_COUNTS" | wc -l)
+    _Q1=$(echo $_COUNTS | cut -d ' ' -f $(((_CCOUNTS + 4 - 1) / 4)))
+    _Q2=$(echo $_COUNTS | cut -d ' ' -f $(((_CCOUNTS + 2 - 1) / 2)))
+    _Q3=$(echo $_COUNTS | cut -d ' ' -f $(((3 * _CCOUNTS + 2 - 1) / 4)))
+
+    _HMONTH=$_FMONTH
+    mi=1
+    ci=1
+
+    case "$_OUTPUT" in
+    ""|t) print_tui;;
+    s) print_svg;;
+    esac
+}
+
+print_tui() {
+    printf '%s' "      "
+    for w in $(seq 1 53)
+    do
+        _CINDEX=$((_FDOY + 7 * w - 1))
+        _CYEAR=$((_YEAR - 1))
+        [ $_CINDEX -ge $_LENGTH ] && _CYEAR=$_YEAR
+        _CMONTH=$(date -d "$_CYEAR-01-01 $((_CINDEX % _LENGTH)) day" +%m)
+
+        if [ $_CMONTH -ne $_HMONTH ]
+        then
+            mi=$((mi + 1))
+            ci=1
+        fi
+
+        # make sure first 2 weeks are of the same month
+        if [ $mi -eq 1 ]                                                    \
+            && [ $(date -d "$_YEAR-01-15 $_FIRST day" +%m) -ne $_FMONTH ]
+        then
+            printf '  '
+        else
+            [ $ci -le 3 ] && printf '%-2s' \
+            "$(echo $_MNAMES | cut -d ' ' -f $mi | cut -c $ci-$((ci + 1)))" \
+                || printf '  '
+        fi
+
+        ci=$((ci + 2))
+        _HMONTH=$_CMONTH
+    done
+    printf '\n'
+
+    for wd in $(seq 1 7)
+    do
+        if [ $((wd % 2)) -eq 0 ]
+        then
+            printf '%5s ' "$(echo $_WNAMES | cut -d ' ' -f $((wd - _WSWM)))"
+        else
+            printf '      '
+        fi
+        for w in $(seq 1 53)
+        do
+            _CINDEX=$((_FDOY + 7 * w - 1 + (wd - 1)))
+            _CYEAR=$((_YEAR - 1))
+            [ $_CINDEX -ge $_LENGTH ] && _CYEAR=$_YEAR
+            _CDOY=$(date -d "$_CYEAR-01-01 $((_CINDEX % _LENGTH)) day" +%j)
+            _DC=$(echo "$_DATA" | grep -o ".*$_CYEAR:$_CDOY$")
+            _C=${_DC%%:*}
+            [ "$_C" = "" ] && _C=0
+
+            [ $_CYEAR -eq $_YEAR ] && [ $((_CINDEX % _LENGTH)) -ge $_TODAY ] && break
+
+            _CC="$((
+                ( $_C == 0 )                    * 1 +
+                ( $_C > 0 && $_C <= $_Q1 )      * 2 +
+                ( $_C > $_Q1 && $_C <= $_Q2 )   * 3 +
+                ( $_C > $_Q2 && $_C <= $_Q3 )   * 4 +
+                ( $_C > $_Q3 )                  * 5 ))"
+
+            printf "$(tput setaf $(echo "$_COLORS" | cut -d ' ' -f $_CC))"
+            printf '%s%s' "$_DSYMB" "$(tput sgr0) "
+        done
+        printf "\n"
+    done
+    printf '\n%92s%s ' " " "$_NLESS"
+    for i in $(seq 1 5)
+    do
+        printf "$(tput setaf $(echo "$_COLORS" | cut -d ' ' -f $i))$_DSYMB$(tput sgr0) "
+    done
+    printf '%s\n' "$_NMORE"
+}
+
+print_svg() {
+    printf '<svg width="669" height="140">\n'
+    printf '  <g transform="translate(10, 20)">\n'
+    for w in $(seq 1 53)
+    do
+        printf '    <g transform="translate(%d, 0)">\n' $(((w - 1) * 13))
+        for wd in $(seq 1 7)
+        do
+            _CINDEX=$((_FDOY + 7 * w - 1 + (wd - 1)))
+            _CYEAR=$((_YEAR - 1))
+            [ $_CINDEX -ge $_LENGTH ] && _CYEAR=$_YEAR
+            _CDOY=$(date -d "$_CYEAR-01-01 $((_CINDEX % _LENGTH)) day" +%j)
+            _DC=$(echo "$_DATA" | grep -o ".*$_CYEAR:$_CDOY$")
+            _C=${_DC%%:*}
+            [ "$_C" = "" ] && _C=0
+
+            [ $_CYEAR -eq $_YEAR ] && [ $((_CINDEX % _LENGTH)) -ge $_TODAY ]\
+                && break
+
+            _CC="$((
+                ( $_C == 0 )                    * 1 +
+                ( $_C > 0 && $_C <= $_Q1 )      * 2 +
+                ( $_C > $_Q1 && $_C <= $_Q2 )   * 3 +
+                ( $_C > $_Q2 && $_C <= $_Q3 )   * 4 +
+                ( $_C > $_Q3 )                  * 5 ))"
+
+            printf '      <rect %s %s %s %s %s/>\n'                         \
+                'width="9"'                                                 \
+                'height="9"'                                                \
+                "x=\"$((16 - (w - 1)))\""                                   \
+                "y=\"$(((wd - 1) * 12))\""                                  \
+                "fill=\"#$(echo "$_HCOLORS" | cut -d ' ' -f $_CC)\""
+        done
+        printf '    </g>\n'
+    done
+
+    for w in $(seq 1 53)
+    do
+        _CINDEX=$((_FDOY + 7 * w - 1))
+        _CYEAR=$((_YEAR - 1))
+        [ $_CINDEX -ge $_LENGTH ] && _CYEAR=$_YEAR
+        _CMONTH=$(date -d "$_CYEAR-01-01 $((_CINDEX % _LENGTH)) day" +%m)
+
+        if [ $mi -eq 1 ]                                                    \
+            && [ $(date -d "$_YEAR-01-15 $_FIRST day" +%m) -ne $_FMONTH ]
+        then
+            mi=$((mi + 1))
+        fi
+
+        if [ $_CMONTH -ne $_HMONTH ]
+        then
+            printf '    <text %s %s %s %s>%s</text>\n'                      \
+                'dominant-baseline="middle"'                                \
+                'class="m"'                                                 \
+                "dx=\"$((16 + 12 * (w - 1)))\""                             \
+                'dy="-6"'                                                   \
+                "$(echo $_MNAMES | cut -d ' ' -f $mi)"
+            mi=$((mi + 1))
+        fi
+        _HMONTH=$_CMONTH
+    done
+
+    for wd in $(seq 1 7)
+    do
+        [ $((wd % 2)) -ne 0 ] && continue
+        printf '    <text %s %s %s %s>%s</text>\n'                          \
+            'dominant-baseline="middle"'                                    \
+            'class="wd"'                                                    \
+            'dx="-9"'                                                       \
+            "dy=\"$((9 + 12 * (wd - 1)))\""                                 \
+            "$(echo $_WNAMES | cut -d ' ' -f $((wd - _WSWM)))"
+    done
+
+    printf '    <text %s %s %s %s %s %s>%s</text>\n'                        \
+        'transform="translate(520)"'                                        \
+        'dominant-baseline="middle"'                                        \
+        'text-anchor="end"'                                                 \
+        'class="l"'                                                         \
+        'dx="0"'                                                            \
+        'dy="107"'                                                          \
+        "$_NLESS"
+    for x in $(seq 1 5)
+    do
+        printf '    <rect %s %s %s %s %s/>\n'                               \
+            'width="9"'                                                     \
+            'height="9"'                                                    \
+            "x=\"$((532 + 12 * (x - 1)))\""                                 \
+            "y=\"99\""                                                      \
+            "fill=\"#$(echo "$_HCOLORS" | cut -d ' ' -f $x)\""
+    done
+    printf '    <text %s %s %s %s %s %s>%s</text>\n'                        \
+        'transform="translate(600)"'                                        \
+        'dominant-baseline="middle"'                                        \
+        'text-anchor="start"'                                               \
+        'class="l"'                                                         \
+        'dx="0"'                                                            \
+        'dy="107"'                                                          \
+        "$_NMORE"
+
+    printf '  </g>\n'
+    printf '</svg>\n'
+
+}
+
+show_help() {
+    printf 1>&2 '%s\n' "$0"
+    printf 1>&2 'usage: %s ' "$0"
+    printf 1>&2 '%s '                                                       \
+        "[-A|--all]"                                                        \
+        "[-a|--author <name>]"                                              \
+        "[-t|--tui]"                                                        \
+        "[-s|--svg]"                                                        \
+        "[-h|--help]"
+    printf 1>&2 '\n'
+    printf 1>&2 '%s\n'                                                      \
+        "   -A, --all               include all branches"                   \
+        "   -a, --author <name>     specify a user"                         \
+        "   -h, --help              show this help text and exit"           \
+        ""                                                                  \
+        "  OUTPUT TYPES"                                                    \
+        "   -t, --tui               output for terminal (default)"          \
+        "   -s, --svg               output as svg"
+}
+
+while :; do
+    case "$1" in
+    -h|--help)
+        show_help; exit 0;;
+    -A|--all)
+        _ALL=1;;
+    -a|--author)
+        shift; _AUTHOR=$1;;
+    -t|--tui)
+        if [ "$_OUTPUT" = "" ]
+        then _OUTPUT='t'
+        else printf 1>&2 'error: only one output type allowed\n'; exit 1
+        fi;;
+    -s|--svg)
+        if [ "$_OUTPUT" = "" ]
+        then _OUTPUT='s'
+        else printf 1>&2 'error: only one output type allowed\n'; exit 1
+        fi;;
+    --)
+        shift; break;;
+    -*)
+        echo "invalid option: $1" 1>&2; return 1;;
+    "")
+        break;;
+    *)
+        _PATH=$@
+        break;;
+    esac
+    shift
+done
+
+main

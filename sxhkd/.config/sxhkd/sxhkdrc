@@ -72,10 +72,7 @@ super + shift + Return
 # --- browsers ----------------------------------------------------------------
 # :vimb tabbed
 super + shift + w
-    /usr/local/bin/vimb-tabbed
-# :surf vdi (remove later)
-super + shift + v
-    /usr/local/bin/surf-vdi
+    ~/.bin/alias/vimb-tabbed
 
 # --- dmenus ------------------------------------------------------------------
 # :run menu

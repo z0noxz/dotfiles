@@ -1,5 +1,4 @@
 #!/bin/sh
-#git log --no-merges --date='format:%Y-%m-%d %H:%M:%S' --pretty=format:"%at:%ad %s" --since="13 months"
 
 _MNAMES="Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec"
 _WNAMES="Mon Tue Wed Thu Fri Sat Sun"
@@ -155,11 +154,16 @@ print_tui() {
 }
 
 print_svg() {
-    printf '<svg width="669" height="140">\n'
-    printf '  <g transform="translate(10, 20)">\n'
+    printf '<svg width="650" height="120">\n'
+    printf '  <style>\n'
+    printf '  .m  { font: normal 10px monospace, sans-serif; fill: #767676;}\n'
+    printf '  .wd { font: normal 10px monospace, sans-serif; fill: #767676;}\n'
+    printf '  .l  { font: normal 10px monospace, sans-serif; fill: #767676;}\n'
+    printf '  </style>\n'
+    printf '  <g transform="translate(20, 20)">\n'
     for w in $(seq 1 53)
     do
-        printf '    <g transform="translate(%d, 0)">\n' $(((w - 1) * 13))
+        printf '    <g transform="translate(%d, 0)">\n' $(((w - 1) * 12))
         for wd in $(seq 1 7)
         do
             _CINDEX=$((_FDOY + 7 * w - 1 + (wd - 1)))
@@ -181,10 +185,10 @@ print_svg() {
                 ( $_C > $_Q3 )                  * 5 ))"
 
             printf '      <rect %s %s %s %s %s/>\n'                         \
-                'width="9"'                                                 \
-                'height="9"'                                                \
+                'width="8"'                                                 \
+                'height="8"'                                                \
                 "x=\"$((16 - (w - 1)))\""                                   \
-                "y=\"$(((wd - 1) * 12))\""                                  \
+                "y=\"$(((wd - 1) * 11))\""                                  \
                 "fill=\"#$(echo "$_HCOLORS" | cut -d ' ' -f $_CC)\""
         done
         printf '    </g>\n'
@@ -208,8 +212,8 @@ print_svg() {
             printf '    <text %s %s %s %s>%s</text>\n'                      \
                 'dominant-baseline="middle"'                                \
                 'class="m"'                                                 \
-                "dx=\"$((16 + 12 * (w - 1)))\""                             \
-                'dy="-6"'                                                   \
+                "dx=\"$((16 + 11 * (w - 1)))\""                             \
+                'dy="-10"'                                                  \
                 "$(echo $_MNAMES | cut -d ' ' -f $mi)"
             mi=$((mi + 1))
         fi
@@ -219,43 +223,44 @@ print_svg() {
     for wd in $(seq 1 7)
     do
         [ $((wd % 2)) -ne 0 ] && continue
-        printf '    <text %s %s %s %s>%s</text>\n'                          \
+        printf '    <text %s %s %s %s %s %s>%s</text>\n'                    \
+            'transform="translate(5)"'                                      \
+            'text-anchor="end"'                                             \
             'dominant-baseline="middle"'                                    \
             'class="wd"'                                                    \
-            'dx="-9"'                                                       \
-            "dy=\"$((9 + 12 * (wd - 1)))\""                                 \
+            'dx="0"'                                                        \
+            "dy=\"$((6 + 11 * (wd - 1)))\""                                 \
             "$(echo $_WNAMES | cut -d ' ' -f $((wd - _WSWM)))"
     done
 
     printf '    <text %s %s %s %s %s %s>%s</text>\n'                        \
-        'transform="translate(520)"'                                        \
+        'transform="translate(476)"'                                        \
         'dominant-baseline="middle"'                                        \
         'text-anchor="end"'                                                 \
         'class="l"'                                                         \
         'dx="0"'                                                            \
-        'dy="107"'                                                          \
+        'dy="90"'                                                           \
         "$_NLESS"
     for x in $(seq 1 5)
     do
         printf '    <rect %s %s %s %s %s/>\n'                               \
-            'width="9"'                                                     \
-            'height="9"'                                                    \
-            "x=\"$((532 + 12 * (x - 1)))\""                                 \
-            "y=\"99\""                                                      \
+            'width="8"'                                                     \
+            'height="8"'                                                    \
+            "x=\"$((489 + 11 * (x - 1)))\""                                 \
+            "y=\"85\""                                                      \
             "fill=\"#$(echo "$_HCOLORS" | cut -d ' ' -f $x)\""
     done
     printf '    <text %s %s %s %s %s %s>%s</text>\n'                        \
-        'transform="translate(600)"'                                        \
+        'transform="translate(556)"'                                        \
         'dominant-baseline="middle"'                                        \
         'text-anchor="start"'                                               \
         'class="l"'                                                         \
         'dx="0"'                                                            \
-        'dy="107"'                                                          \
+        'dy="90"'                                                           \
         "$_NMORE"
 
     printf '  </g>\n'
     printf '</svg>\n'
-
 }
 
 show_help() {

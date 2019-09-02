@@ -1,0 +1,3 @@
+# Vendor 0451 is Texas Instruments, devices:
+# e008: TI-84 Plus Silver Edition USB Device (DirectLink)
+SUBSYSTEM=="usb", ACTION=="add", ATTR{idVendor}=="0451", ATTR{idProduct}=="e008", MODE="660", GROUP="tilp"

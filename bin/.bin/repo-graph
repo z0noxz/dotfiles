@@ -202,7 +202,7 @@ print_svg() {
         _CMONTH=$(date -d "$_CYEAR-01-01 $((_CINDEX % _LENGTH)) day" +%m)
 
         if [ $mi -eq 1 ]                                                    \
-            && [ $(date -d "$_YEAR-01-15 $_FIRST day" +%m) -ne $_FMONTH ]
+            && [ $(date -d "$_YEAR-01-30 $_FIRST day" +%m) -ne $_FMONTH ]
         then
             mi=$((mi + 1))
         fi

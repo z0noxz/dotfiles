@@ -1,7 +1,7 @@
 #!/bin/sh
 
 args=" -p main: -l 20"
-options="bookmarks\ndi.fm\ntodo\nsoundcloud\noperations\nyoutube\nman\npass"
+options="bookmarks\ndi.fm\ntodo\nsoundcloud\noperations\nyoutube\nman\npass\npower"
 
 get_fm_key () {
     local key_location="/tmp/.di.fm.key"
@@ -30,6 +30,8 @@ soundcloud)
     dmenu_sscw${args} -i;;
 youtube)
     dmenu_yt_search${args} -i;;
+power)
+    dmenu_power${args} -i;;
 operations)
     operations dmenu${args} -i -p operations:;;
 esac

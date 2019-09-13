@@ -1,20 +1,28 @@
 #!/bin/sh
 
 args=" -p power:"
-options="lock\nlogout\nshutdown\nreboot"
+options="
+    lock
+    logout
+    shutdown
+    reboot
+"
 
 if [ "$1" = "off" ]; then
-    dmenu_confirm                                       \
-        -p "shutdown:"                                  \
-        -nb "#fb2222"                                   \
-        -nf "#000000"                                   \
-        -sb "#000000"                                   \
-        -sf "#fb2222"                                   \
+    dmenu_confirm                                                           \
+        -p "shutdown:"                                                      \
+        -nb "#fb2222"                                                       \
+        -nf "#000000"                                                       \
+        -sb "#000000"                                                       \
+        -sf "#fb2222"                                                       \
         -cmd "sudo runit-init 0"
     return 0;
 fi
 
-case "$(printf "$options" | dmenu_vtc${args})" in
+case "$(printf "$options"                                                   \
+| sed -e '/^$/d' -e 's/^[ \t]*//'                                           \
+| sort                                                                      \
+| dmenu_vtc${args})" in
 lock)
     /usr/local/bin/slock -m "locked at $(date "+%H:%M:%S";
         echo '------------------';

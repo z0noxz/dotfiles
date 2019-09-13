@@ -1,37 +1,50 @@
 #!/bin/sh
 
 args=" -p main: -l 20"
-options="bookmarks\ndi.fm\ntodo\nsoundcloud\noperations\nyoutube\nman\npass\npower"
+options="
+    bookmarks
+    di.fm
+    man
+    operations
+    pass
+    power
+    soundcloud
+    todo
+    youtube
+"
 
 get_fm_key () {
     local key_location="/tmp/.di.fm.key"
     local key_pass="di.fm/listen-key"
 
-    [ ! -f "$key_location" ]                    \
-        && touch "$key_location"                \
-        && chmod 600 "$key_location"            \
+    [ ! -f "$key_location" ]                                                \
+        && touch "$key_location"                                            \
+        && chmod 600 "$key_location"                                        \
         && pass "$key_pass" > "$key_location"
 
     echo $(cat "$key_location")
 }
 
-case "$(printf "$options" | sort | dmenu_vtc${args})" in
-man)
-    dmenu_man${args} -i -p man:;;
+case "$(printf "$options"                                                   \
+| sed -e '/^$/d' -e 's/^[ \t]*//'                                           \
+| sort                                                                      \
+| dmenu_vtc${args})" in
 bookmarks)
     dmenu_bookmarks "$HOME/.data/bookmarks" ${args} -i -p bookmark:;;
 di.fm)
     dmenu_di.fm "$(get_fm_key)" ${args} -i -p di.fm:;;
-todo)
-    dmenu_todo "$HOME/.data/todo" ${args} -i -p todo:;;
-pass)
-    dmenu_passmenu ${args} -i -p pass:;;
-soundcloud)
-    dmenu_sscw${args} -i;;
-youtube)
-    dmenu_yt_search${args} -i;;
-power)
-    dmenu_power${args} -i;;
+man)
+    dmenu_man${args} -i -p man:;;
 operations)
     operations dmenu${args} -i -p operations:;;
+pass)
+    dmenu_passmenu ${args} -i -p pass:;;
+power)
+    dmenu_power${args} -i;;
+soundcloud)
+    dmenu_sscw${args} -i;;
+todo)
+    dmenu_todo "$HOME/.data/todo" ${args} -i -p todo:;;
+youtube)
+    dmenu_yt_search${args} -i;;
 esac

@@ -1,7 +1,5 @@
 " TODO ::
-" * some sort of shortcut to 'make'
-" * http://www.alexeyshmalko.com/2014/using-vim-as-c-cpp-ide/
-" * http://learnvimscriptthehardway.stevelosh.com/chapters/14.html
+" * some sort of macro for 'make', 'groff' etc...?
 
 " load plugins {{{
 runtime plugins/vim-status/vim-status.vim

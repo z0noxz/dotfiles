@@ -9,7 +9,7 @@ set mail_check              = 0
 set forward_format          = "Fwd: %s"
 set include
 set forward_quote
-set signature               = "~/.mutt/signature.muttrc"
+#set signature               = "~/.mutt/signature.muttrc"
 set sig_dashes              = yes
 set send_charset            = "us-ascii:utf-8"
 
@@ -32,7 +32,7 @@ macro index,pager           c "<change-folder>?<toggle-mailboxes>"
 macro index,pager           >m "<tag-prefix><save-message>?<toggle-mailboxes>"
 macro index,pager           >c "<tag-prefix><copy-message>?<toggle-mailboxes>"
 macro compose               >a "<attach-message>?<toggle-mailboxes>"
-macro index,pager           >SS "<shell-escape>operations sync-mail<enter><change-folder>!<enter>"
+macro index,pager           R "<shell-escape>operations sync-mail<enter><change-folder>!<enter>"
 
 # Sidebar
 set sleep_time              = 0
@@ -112,10 +112,10 @@ set edit_headers            = yes
 unset use_domain
 unset user_agent
 unmy_hdr *
-my_hdr X-Info: Keep It Simple, Stupid.
-my_hdr X-Operating-System: `uname -s`, kernel `uname -r`
-my_hdr X-Message-Flag: WARNING: you are using an inferior email client
-my_hdr User-Agent: Every email client sucks, this one just sucks less.
+#my_hdr X-Info: Keep It Simple, Stupid.
+#my_hdr X-Operating-System: `uname -s`, kernel `uname -r`
+#my_hdr X-Message-Flag: WARNING: you are using an inferior email client
+#my_hdr User-Agent: Every email client sucks, this one just sucks less.
 
 set my_accf_0               = "/tmp/mutt-webmail-0-local.tld"
 set my_accf_1               = "/tmp/mutt-webmail-1-local.tld"

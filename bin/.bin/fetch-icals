@@ -24,10 +24,12 @@ do
         curl                                                                \
             --silent "${_link##*]}"                                         \
             --user "$(eval "$_user")"                                       \
+            --location                                                      \
         | sed -e '1,/VEVENT/{/VEVENT/p;d}' -e '$d' >> $_tmp
     else
         curl                                                                \
             --silent "$_link"                                               \
+            --location                                                      \
         | sed -e '1,/VEVENT/{/VEVENT/p;d}' -e '$d' >> $_tmp
     fi
 

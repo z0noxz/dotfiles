@@ -1,6 +1,6 @@
 #!/bin/ksh
 
-export SSH_AUTH_SOCK="$HOME/.ssh-agent"
+export SSH_AUTH_SOCK="$HOME/.tmp/.ssh-agent"
 
 [ -S "$SSH_AUTH_SOCK" ] && return
 

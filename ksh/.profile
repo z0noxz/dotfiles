@@ -2,7 +2,7 @@
 [ -f "$HOME/.kshrc" ] && export ENV="$HOME/.kshrc"
 
 # add local paths
-export PATH="$PATH:$HOME/.bin"
+export PATH="$PATH:$HOME/.bin:/xtra/bin"
 
 export TERMINAL="/usr/local/bin/st"
 

@@ -109,6 +109,10 @@ nnoremap E $
 nnoremap <silent> <leader>f :LiteDFMToggle<CR>
 " }}}
 
+" auto compile {{{
+map <leader>c :w! \| !compile <c-r>%<CR>
+"}}}
+
 " tab settings {{{
 set tabstop=4                   " tab equals 4 spaces
 set softtabstop=4               " soft tab equals 4 spaces

@@ -1,0 +1,17 @@
+#!/bin/sh
+
+_FILE=$(readlink -f "$1")
+_DIR=$(dirname "$_FILE")
+_BASE="${_FILE%.*}"
+
+cd "$_DIR" || return
+
+case "$_FILE" in
+*\.ms)  preconv "$_FILE"                                                    \
+        | refer                                                             \
+        | eqn -Tpdf                                                         \
+        | tbl -Tpdf                                                         \
+        | pic -Tpdf                                                         \
+        | groff -ms -Tpdf > "$_BASE.pdf"
+        ;;
+esac

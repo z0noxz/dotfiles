@@ -5,4 +5,4 @@ then
     ssh-agent-init
 fi
 
-/bin/ssh $@
+/bin/ssh "$@"

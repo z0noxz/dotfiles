@@ -7,7 +7,7 @@ exec 4>&1
     -e "s/^\(\s\{5,\}\)\(.*\)$/\1$(tput setaf 15; tput sitm)\2$(tput sgr0)/g"\
     >&4 |&
 exec >&p
-/usr/bin/make $@ 2>&1 )
+/usr/bin/make "$@" 2>&1 )
 ec=$?
 exec >&- >&4
 return ${ec}

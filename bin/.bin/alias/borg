@@ -3,4 +3,4 @@
 export BORG_REPO="/xtra/backup/local"
 export BORG_PASSCOMMAND="pass backup/borg/local/passphrase"
 
-/bin/borg $@
+/bin/borg "$@"

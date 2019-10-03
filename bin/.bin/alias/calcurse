@@ -1,3 +1,3 @@
 #!/bin/sh
 
-/bin/calcurse -c ~/.data/calcurse/$(ls ~/.data/calcurse/ | fzf) $@
+/bin/calcurse -c ~/.data/calcurse/$(ls ~/.data/calcurse/ | fzf) "$@"

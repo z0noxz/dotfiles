@@ -12,6 +12,6 @@ case "$_FILE" in
         | eqn -Tpdf                                                         \
         | tbl -Tpdf                                                         \
         | pic -Tpdf                                                         \
-        | groff -ms -Tpdf > "$_BASE.pdf"
+        | groff -k -ms -Tpdf > "$_BASE.pdf"
         ;;
 esac

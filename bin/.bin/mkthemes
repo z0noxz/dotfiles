@@ -1,6 +1,6 @@
 #!/bin/sh
 
-for vt in $HOME/.themes/*.vt
+for vt in $HOME/.config/themes/*.vt
 do
     _r=""; _g=""; _b=""
     _n=${vt##*/}

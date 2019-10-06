@@ -55,7 +55,7 @@ flaglist=(
 # Style for the cdm dialog, which is printed with dialog(1).
 # Default to unset, causing dialog(1) to use the system wide default.
 # See /usr/share/doc/cdm/themes for some nice choices.
-dialogrc=~/.cdm-dialogrc
+dialogrc="${XDG_CONFIG_HOME:-$HOME/.config}/cdm/cdm-dialogrc"
 
 # Index of the first item in the menu.
 countfrom=1

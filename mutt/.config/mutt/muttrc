@@ -1,6 +1,6 @@
 # Basic
 set editor                  = "/usr/bin/vim"
-set sendmail                = "msmtp-tpl ~/.msmtprc-template"
+set sendmail                = "msmtp-tpl ~/.config/mstmp/template"
 set use_from                = yes
 set envelope_from           = yes
 set mail_check              = 0
@@ -9,7 +9,6 @@ set mail_check              = 0
 set forward_format          = "Fwd: %s"
 set include
 set forward_quote
-#set signature               = "~/.mutt/signature.muttrc"
 set sig_dashes              = yes
 set send_charset            = "us-ascii:utf-8"
 
@@ -90,7 +89,7 @@ color header                color0  color2 '^reply-to:'
 color quoted                color14 color2
 
 # mailcap
-set mailcap_path            = "~/.mutt/mailcap"
+set mailcap_path            = "~/.config/mutt/mailcap"
 alternative_order           = text/plain text/enriched text/html
 auto_view                   = text/html
 # open message in html view

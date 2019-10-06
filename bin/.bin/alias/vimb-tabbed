@@ -3,5 +3,4 @@
 tabbed                  \
     -n vimb             \
     -c vimb "$@"        \
-    -c ~/.vimb/config   \
     -e

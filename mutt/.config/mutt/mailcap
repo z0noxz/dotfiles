@@ -17,4 +17,4 @@ image/x-ong;sxiv %s
 
 # HTML
 text/html;vimb %s >/dev/null 2>&1; nametemplate=%s.html;
-text/html;w3m -I %{charset} -T text/html; copiousoutput
+text/html; lynx -dump -width=78 -nolist %s | sed ‘s/^   //’; copiousoutput; needsterminal; nametemplate=%s.html

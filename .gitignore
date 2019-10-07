@@ -2,6 +2,8 @@ calcurse/.config/calcurse/.calcurse.pid
 calcurse/.config/calcurse/apts
 calcurse/.config/calcurse/todo
 calcurse/.config/calcurse/notes
+FreeCAD/.config/FreeCAD/FreeCAD.conf
+gtk/.config/gtk-2.0/gtkfilechooser.ini
 newsboat/.config/newsboat/urls
 vifm/.config/vifm/vifminfo
 vimb/.config/vimb/*
@@ -9,3 +11,4 @@ vimb/.config/vimb/*
 !vimb/.config/vimb/scripts.js
 !vimb/.config/vimb/style.css
 .netrwhist
+cookies

@@ -12,3 +12,4 @@ vimb/.config/vimb/*
 !vimb/.config/vimb/style.css
 .netrwhist
 cookies
+*.log

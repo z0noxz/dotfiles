@@ -1,3 +1,0 @@
-#!/bin/sh
-
-/bin/tmux -f "$XDG_CONFIG_HOME/tmux/tmux.conf" "$@"

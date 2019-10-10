@@ -64,7 +64,7 @@ super + control + shift + {1-9}
     echo toggle tag {0-8} > /tmp/dwm.fifo
 # :spawn terminal (with tmux)
 super + Return
-    echo spawn $TERMINAL -e tmux > /tmp/dwm.fifo
+    echo spawn $HOME/.bin/tmux-term > /tmp/dwm.fifo
 # :spawn terminal
 super + shift + Return
     echo spawn $TERMINAL > /tmp/dwm.fifo

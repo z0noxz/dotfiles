@@ -17,4 +17,4 @@ image/x-ong;sxiv %s
 
 # HTML
 text/html;vimb %s >/dev/null 2>&1; nametemplate=%s.html;
-text/html; lynx -display_charset UTF-8 -dump -width=78 -nolist %s | sed 's/^[ \t]*//g'; copiousoutput; needsterminal; nametemplate=%s.html
+text/html; lynx -display_charset UTF-8 -dump -width=78 %s | sed 's/^[ \t]*//g'; copiousoutput; needsterminal; nametemplate=%s.html

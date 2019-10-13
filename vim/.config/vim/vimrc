@@ -130,7 +130,7 @@ nnoremap <silent> <leader>f :LiteDFMToggle<CR>
 " }}}
 
 " auto compile {{{
-map <leader>c :w! \| silent !compile <c-r>%<CR>:redraw!<CR>
+map <leader>c :w! \| silent !compile <c-r>%<CR><Esc>:redraw!<CR>
 "}}}
 
 " tab settings {{{

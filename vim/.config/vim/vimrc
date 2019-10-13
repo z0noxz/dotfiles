@@ -130,7 +130,7 @@ nnoremap <silent> <leader>f :LiteDFMToggle<CR>
 " }}}
 
 " auto compile {{{
-map <leader>c :w! \| !compile <c-r>%<CR>
+map <leader>c :w! \| silent !compile <c-r>%<CR>:redraw!<CR>
 "}}}
 
 " tab settings {{{
@@ -215,6 +215,12 @@ elseif (&ft == 'make')
     set formatoptions-=t        " disable wrapping
     set noexpandtab             " make requires tabs as separators
 endif
+" }}}
+
+" save as root {{{
+command W
+    \ :execute ':silent w !sudo tee % > /dev/null'
+    \ | :edit!
 " }}}
 
 function! ExpandOrEmpty(name)

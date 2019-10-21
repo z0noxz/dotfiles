@@ -1,11 +1,21 @@
 #!/bin/ksh
 
-export PS1="$(printf '[xxx] %s\[%s\]\\u\[%s\] \\w%s \$ '                          \
+export PS1="$(printf '[xxx]%s\[%s\]%s\[%s\] \\w%s \$ '                      \
     '$(_ksh_set_title)'                                                     \
     '$(tput bold)'                                                          \
     '$(tput sgr0)'                                                          \
+    '$(_ksh_user_prompt)'                                                   \
     '$(_ksh_git_prompt)'                                                    \
 )"
+
+_ksh_user_prompt() {
+
+    # abort if me
+    [ $(id -u) == 1000 ] && return
+
+    # print username
+    printf ' %s' "$(id -un)"
+}
 
 _ksh_git_prompt() {
 

@@ -9,9 +9,17 @@ cd "$_DIR" || return
 case "$_FILE" in
 *\.ms)  preconv "$_FILE"                                                    \
         | refer                                                             \
-        | eqn -Tpdf                                                         \
         | tbl -Tpdf                                                         \
+        | eqn -Tpdf                                                         \
         | pic -Tpdf                                                         \
-        | groff -k -ms -Tpdf > "$_BASE.pdf"
+        | groff -k -ms -msv -dpaper=a4 -P-pa4 -P-e -Tpdf                    \
+        | gs                                                                \
+            -q                                                              \
+            -dNOPAUSE                                                       \
+            -dBATCH                                                         \
+            -dPDFSETTINGS=/prepress                                         \
+            -sDEVICE=pdfwrite                                               \
+            -dPrinted=false                                                 \
+            -sOutputFile="$_BASE.pdf" -
         ;;
 esac

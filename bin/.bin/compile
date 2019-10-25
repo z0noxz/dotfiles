@@ -3,6 +3,8 @@
 _FILE=$(readlink -f "$1")
 _DIR=$(dirname "$_FILE")
 _BASE="${_FILE%.*}"
+_PRFX="---COMPILE:"
+_ARGS="$(grep -oP -- "$_PRFX.*$" "$_FILE" |  sed -s "s|$_PRFX||")"
 
 cd "$_DIR" || return
 
@@ -12,7 +14,7 @@ case "$_FILE" in
         | tbl -Tpdf                                                         \
         | eqn -Tpdf                                                         \
         | pic -Tpdf                                                         \
-        | groff -k -ms -msv -dpaper=a4 -P-pa4 -P-e -Tpdf                    \
+        | groff -k -ms $_ARGS -dpaper=a4 -P-pa4 -P-e -Tpdf                  \
         | gs                                                                \
             -q                                                              \
             -dNOPAUSE                                                       \

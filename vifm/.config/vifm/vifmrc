@@ -108,8 +108,8 @@ set timefmt="%Y-%m-%d %H:%M"
 set rulerformat='%2l/%S%[ (+%x)%]'
 
 " status line
-highlight User1 cterm=none  ctermfg=14  ctermbg=5
-highlight User2 cterm=none  ctermfg=5   ctermbg=14
+highlight User1 cterm=none  ctermfg=6   ctermbg=5
+highlight User2 cterm=none  ctermfg=5   ctermbg=6
 let &statusline  = "%2* %t"     " file name
 let &statusline .= " %1* "     " left separator
 let &statusline .= "%= "        " fill the whole status line

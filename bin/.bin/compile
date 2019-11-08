@@ -11,6 +11,7 @@ cd "$_DIR" || return
 case "$_FILE" in
 *\.ms)  preconv "$_FILE"                                                    \
         | refer                                                             \
+        | tapas                                                             \
         | tbl -Tpdf                                                         \
         | eqn -Tpdf                                                         \
         | pic -Tpdf                                                         \

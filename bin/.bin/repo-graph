@@ -66,7 +66,7 @@ main() {
     [ "$_LOG" = "" ] && printf '%s: got empty log, exiting...\n' "$0" && return
 
     _DATA=$(get_day_count)
-    _COUNTS=$(echo "$_DATA" | sed -e 's/:.*$//g' | sort)
+    _COUNTS=$(echo "$_DATA" | sed -e 's/:.*$//g' | sort -n)
     _CCOUNTS=$(echo "$_COUNTS" | wc -l)
     _Q1=$(echo $_COUNTS | cut -d ' ' -f $(((_CCOUNTS + 4 - 1) / 4)))
     _Q2=$(echo $_COUNTS | cut -d ' ' -f $(((_CCOUNTS + 2 - 1) / 2)))

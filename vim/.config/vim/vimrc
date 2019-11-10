@@ -223,6 +223,12 @@ command W
     \ | :edit!
 " }}}
 
+" command line {{{
+nnoremap : q:i
+nnoremap / q/i
+nnoremap ? q?i
+" }}}
+
 function! ExpandOrEmpty(name)
     try
         return expand(a:name)

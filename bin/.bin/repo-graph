@@ -40,7 +40,7 @@ get_days() {
 }
 
 get_day_count() {
-    get_days | uniq -c | sed -e 's/^\ *//g' -e 's/\ /:/g'
+    get_days | sort | uniq -c | sed -e 's/^\ *//g' -e 's/\ /:/g'
 }
 
 main() {
@@ -58,7 +58,7 @@ main() {
     for d in $_PATH
     do
         d="$(realpath $d)"
-        _LOG=$(printf '%s\n%s' "$_LOG" "$(git_log $d)")
+        _LOG=$(printf '%s\n%s' "$_LOG" "$(git_log $d | tr ' ' '\n')")
         [ $? -ne 0 ] && printf 'error: %s failed to get log: %s\n'          \
             "$0" "$d" && return
     done
@@ -184,12 +184,13 @@ print_svg() {
                 ( $_C > $_Q2 && $_C <= $_Q3 )   * 4 +
                 ( $_C > $_Q3 )                  * 5 ))"
 
-            printf '      <rect %s %s %s %s %s/>\n'                         \
+            printf '      <rect %s %s %s %s %s><title>%s</title></rect>\n'  \
                 'width="8"'                                                 \
                 'height="8"'                                                \
                 "x=\"$((16 - (w - 1)))\""                                   \
                 "y=\"$(((wd - 1) * 11))\""                                  \
-                "fill=\"#$(echo "$_HCOLORS" | cut -d ' ' -f $_CC)\""
+                "fill=\"#$(echo "$_HCOLORS" | cut -d ' ' -f $_CC)\""        \
+                "$_C commits"
         done
         printf '    </g>\n'
     done

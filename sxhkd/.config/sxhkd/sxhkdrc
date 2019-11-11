@@ -156,3 +156,11 @@ super + apostrophe; 1
 # :toggle power
 super + apostrophe; 2
     echo toggle power > /tmp/ztatus.fifo
+
+# --- misc --------------------------------------------------------------------
+# :record screen region
+shift + Print
+    screenrec
+# :print screen region
+Print
+    screenshot

@@ -26,6 +26,7 @@ case "$_FILE" in
             -sOutputFile="$_BASE.pdf" -
         ;;
 *\.md)  lowdown -s -Tms "$_FILE"                                            \
+        | sed -e 's/\.nr PS 10/\.nr PS 12\n\.nr VS 18/g'                    \
         | preconv                                                           \
         | tbl -Tpdf                                                         \
         | groff -k -ms $_ARGS -dpaper=a4 -P-pa4 -P-e -Tpdf                  \

@@ -25,4 +25,17 @@ case "$_FILE" in
             -dPrinted=false                                                 \
             -sOutputFile="$_BASE.pdf" -
         ;;
+*\.md)  lowdown -s -Tms "$_FILE"                                            \
+        | preconv                                                           \
+        | tbl -Tpdf                                                         \
+        | groff -k -ms $_ARGS -dpaper=a4 -P-pa4 -P-e -Tpdf                  \
+        | gs                                                                \
+            -q                                                              \
+            -dNOPAUSE                                                       \
+            -dBATCH                                                         \
+            -dPDFSETTINGS=/prepress                                         \
+            -sDEVICE=pdfwrite                                               \
+            -dPrinted=false                                                 \
+            -sOutputFile="$_BASE.pdf" -
+        ;;
 esac

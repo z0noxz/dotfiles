@@ -1,8 +1,11 @@
 #!/bin/sh
 
 hdmi_status="/tmp/.hdmi_status"
-hdmi="/sys/class/drm/card0-HDMI-A-2/status"
-lvds="/sys/class/drm/card0-LVDS-1/enabled"
+drm_dir="/sys/class/drm"
+int_card="$(ls "$drm_dir" | grep .*LVDS.* | grep -o 'card.')"
+lvds="$drm_dir/$int_card-LVDS-1/enabled"
+hdmi="$drm_dir/$int_card-HDMI-*/status"
+gpu_count="$(ls "$drm_dir" | grep -o card. | sort -u | wc -l)"
 
 print_help() {
     echo "Usage: ${0##*/} ACTION\n"
@@ -25,6 +28,10 @@ install_udev_rule() {
     else
         echo "must run as root"
     fi
+}
+
+enable_egpu() {
+    [ "$gpu_count" = "2" ] && xrandr --setprovideroutputsource 1 0
 }
 
 enable_lvds() {
@@ -51,8 +58,9 @@ force-lvds)
     fi
 ;;
 setup)
-    if [ "$(cat ${hdmi})" = "connected" ]; then
+    if grep -q ^connected$ $hdmi; then
         enable_hdmi
+        enable_egpu
     else
         enable_lvds
     fi

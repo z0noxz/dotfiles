@@ -9,6 +9,23 @@ _ARGS="$(grep -oP -- "$_PRFX.*$" "$_FILE" |  sed -s "s|$_PRFX||")"
 cd "$_DIR" || return
 
 case "$_FILE" in
+*\.ps.ms)  preconv "$_FILE"                                                 \
+        | refer                                                             \
+        | tapas                                                             \
+        | tbl -Tps                                                          \
+        | eqn -Tps                                                          \
+        | pic -Tps                                                          \
+        | groff -k -ms $_ARGS -dpaper=a4 -P-pa4 -Tps                        \
+        | ps2pdf -                                                          \
+        | gs                                                                \
+            -q                                                              \
+            -dNOPAUSE                                                       \
+            -dBATCH                                                         \
+            -dPDFSETTINGS=/prepress                                         \
+            -sDEVICE=pdfwrite                                               \
+            -dPrinted=false                                                 \
+            -sOutputFile="$_BASE.pdf" -
+        ;;
 *\.ms)  preconv "$_FILE"                                                    \
         | refer                                                             \
         | tapas                                                             \

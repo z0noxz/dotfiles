@@ -42,7 +42,9 @@ dwm)
     "$HOME"/.bin/monitor setup
 
     # set wallpaper
-    [ -f  "$HOME"/.wallpaper.ff.gz  ] && swall "$HOME"/.wallpaper.ff.gz
+    [ -f  "$HOME"/.wallpaper.ff.gz  ]                       \
+    && cp "$HOME"/.wallpaper.ff.gz /tmp/wallpaper.ff.gz     \
+    && swall /tmp/wallpaper.ff.gz
 
     # start daemons
     [ ! $(pidof -x monitor-daemon)  ] && "$HOME"/.bin/monitor daemon &

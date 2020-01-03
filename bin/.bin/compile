@@ -12,10 +12,10 @@ case "$_FILE" in
 *\.ps.ms)  preconv "$_FILE"                                                 \
         | refer                                                             \
         | tapas                                                             \
-        | tbl -Tps                                                          \
-        | eqn -Tps                                                          \
         | grap                                                              \
         | pic -Tps                                                          \
+        | tbl -Tps                                                          \
+        | eqn -Tps                                                          \
         | groff -k -ms $_ARGS -dpaper=a4 -P-pa4 -Tps                        \
         | ps2pdf -                                                          \
         | gs                                                                \
@@ -30,10 +30,10 @@ case "$_FILE" in
 *\.ms)  preconv "$_FILE"                                                    \
         | refer                                                             \
         | tapas                                                             \
-        | tbl -Tpdf                                                         \
-        | eqn -Tpdf                                                         \
         | grap                                                              \
         | pic -Tpdf                                                         \
+        | tbl -Tpdf                                                         \
+        | eqn -Tpdf                                                         \
         | groff -k -ms $_ARGS -dpaper=a4 -P-pa4 -P-e -Tpdf                  \
         | gs                                                                \
             -q                                                              \

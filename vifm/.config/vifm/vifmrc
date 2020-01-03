@@ -47,7 +47,7 @@ highlight /(.ff.gz|.ff|.bmp|.jpg|.jpeg|.png|,gif|.xpm|.svg)$/
     \                       cterm=bold      ctermfg=6           ctermbg=default
 highlight /(.pdf|.ps)$/
     \                       cterm=bold      ctermfg=6           ctermbg=default
-highlight /(.tar.gz|.tar)$/
+highlight /(.tar.gz|.tar|.zip)$/
     \                       cterm=bold      ctermfg=red         ctermbg=default
 
 " open images with sxiv (in background)
@@ -66,6 +66,7 @@ filextype *.avi,*.mp4,*.wmv,*.dat,*.3gp,*.ogv,*.mkv,*.mpg,*.mpeg,*.vob,
     \ mpv %c 2>/dev/null &
 
 
+fileviewer *.zip        unzip -Z1 %c | fold -w $((%pw-1)) | sed -e 's/^/ /'
 fileviewer *.tar        tar -tf %c | fold -w $((%pw-1)) | sed -e 's/^/ /'
 fileviewer *.tar.gz     tar -ztf %c | fold -w $((%pw-1)) | sed -e 's/^/ /'
 

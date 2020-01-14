@@ -4,7 +4,7 @@
 
 [DEVICE]
 #Calculator model
-calc_model=TI84+
+calc_model=TI84+CE USB
 #Cable model
 cable_model=DirectLink
 #Port

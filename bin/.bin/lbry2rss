@@ -2,6 +2,8 @@
 #
 # usage: lbry2rss "lbry://@lbry.social#1" > lbry.social.rss
 # Works with newsboat and mpv!
+# usage in newsboat:
+#   "exec:lbry2rss 'lbry://@<channel>'"
 
 CHNL="$1"
 

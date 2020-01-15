@@ -18,8 +18,9 @@ LIST_REQ="{
     \"method\":\"claim_search\",
     \"params\":{
         \"channel\":\"$CHNL\",
+        \"order_by\":[\"release_time\"],
         \"page\":1,
-        \"page_size\":15
+        \"page_size\":50
     }
 }"
 LIST_QRY=".result.items[] |

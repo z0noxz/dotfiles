@@ -3,7 +3,7 @@
 args=" -p main: -l 20"
 options="
     bookmarks
-    di.fm
+    radio
     man
     operations
     pass
@@ -31,8 +31,8 @@ case "$(printf "$options"                                                   \
 | dmenu_vtc${args})" in
 bookmarks)
     dmenu_bookmarks "$HOME/.data/bookmarks" ${args} -i -p bookmark:;;
-di.fm)
-    dmenu_di.fm "$(get_fm_key)" ${args} -i -p di.fm:;;
+radio)
+    dmenu_radio "$(get_fm_key)" ${args} -i -p provider:;;
 man)
     dmenu_man${args} -i -p man:;;
 operations)

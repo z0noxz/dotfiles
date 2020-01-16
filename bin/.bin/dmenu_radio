@@ -1,16 +1,22 @@
 #!/bin/sh
 
+provider=""
 choice=""
 data=""
 key="$1"; shift
 options=""
 args=" $@"
+quality="premium_high" # premium_low, premium_medium, premium, premium_high
 
 [ "$key" = "" ] && exit 1
 
+# choose provider
+provider=$(printf "di.fm\nradiotunes.com\nrockradio.com\njazzradio.com" \
+    | sort | dmenu_vtc${args})
+
 # download list of available channels
 data="$(
-    curl -s "http://listen.di.fm/premium_high/"         \
+    curl -s "http://listen.$provider/$quality/"         \
     | grep -Po "http://listen.*?pls"                    \
 )"
 options="$(
@@ -20,7 +26,7 @@ options="$(
 )"
 
 # get url based on choice
-choice=$(printf "$options" | sort | dmenu_vtc${args})
+choice=$(printf "$options" | sort | dmenu_vtc${args} -p $provider:)
 choice=$(printf "$data" | grep "/$choice.pls")
 choice="${choice##*\ }"
 

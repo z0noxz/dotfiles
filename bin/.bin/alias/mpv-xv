@@ -1,0 +1,3 @@
+#!/bin/sh
+
+/bin/mpv --vo=xv --vd-lavc-fast --ytdl-format=best "$@"

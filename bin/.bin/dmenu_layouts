@@ -2,11 +2,9 @@
 
 args=" -p layouts: -l 20"
 options="
-    columns
     floating
     grid
     monocle
-    tcl
     tiled
 "
 
@@ -15,6 +13,6 @@ layout="$(printf "$options"                                                 \
 | sort                                                                      \
 | dmenu_vtc${args})"
 case "$layout" in
-    grid|columns|tiled|floating|monocle|tcl)
+    grid|tiled|floating|monocle)
         echo "set layout $layout" > "/tmp/dwm.fifo";;
 esac

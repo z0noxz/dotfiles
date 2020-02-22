@@ -25,26 +25,29 @@ get_fm_key () {
     echo $(cat "$key_location")
 }
 
-case "$(printf "$options"                                                   \
-| sed -e '/^$/d' -e 's/^[ \t]*//'                                           \
-| sort                                                                      \
-| dmenu_vtc${args})" in
-bookmarks)
-    dmenu_bookmarks "$HOME/.data/bookmarks" ${args} -i -p bookmark:;;
-radio)
-    dmenu_radio "$(get_fm_key)" ${args} -i -p provider:;;
-man)
-    dmenu_man${args} -i -p man:;;
-operations)
-    operations dmenu${args} -i -p operations:;;
-pass)
-    dmenu_passmenu ${args} -i -p pass:;;
-power)
-    dmenu_power${args} -i;;
-soundcloud)
-    dmenu_sscw${args} -i;;
-todo)
-    dmenu_todo "$HOME/.data/todo" ${args} -i -p todo:;;
-youtube)
-    dmenu_yt_search${args} -i;;
-esac
+while :; do
+    case "$(printf "$options"                                               \
+        | sed -e '/^$/d' -e 's/^[ \t]*//'                                   \
+        | sort                                                              \
+        | dmenu_vtc${args})" in
+    bookmarks)
+        dmenu_bookmarks "$HOME/.data/bookmarks" ${args} -i -p bookmark:;;
+    radio)
+        dmenu_radio "$(get_fm_key)" ${args} -i -p provider:;;
+    man)
+        dmenu_man${args} -i -p man:;;
+    operations)
+        operations dmenu${args} -i -p operations:;;
+    pass)
+        dmenu_passmenu ${args} -i -p pass:;;
+    power)
+        dmenu_power${args} -i;;
+    soundcloud)
+        dmenu_sscw${args} -i;;
+    todo)
+        dmenu_todo "$HOME/.data/todo" ${args} -i -p todo:;;
+    youtube)
+        dmenu_yt_search${args} -i;;
+    *) break;;
+    esac
+done

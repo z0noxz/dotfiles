@@ -1,32 +1,10 @@
 #!/bin/sh
 
-args=""
-cmd=""
+[ -z "$1" ] && exit 1
+prompt="$1"; shift
 
-while :; do
-    case "$1" in
-    -b | -f | -i)
-        args="$args $1" ;;
-    -l | -h | -m | -p | -fn | -nb | -nf | -sb | -sf )
-        args="$args $1"; shift; args="$args $1";;
-    -w )
-        args="$args $1"; shift; args="$args $(eval echo $1)" ;;
-    -cmd )
-        shift; cmd="$1";;
-    --)
-        shift; break ;;
-    -*)
-        echo "invalid option: $1" 1>&2; exit 1 ;;
-    *)
-        break ;;
-    esac
-    shift
-done
-
-if [ "$cmd" = "" ]; then
+if [ "$(echo no\\nyes | dmenu_vtc $@ -p "$prompt")" = "yes" ]; then
     exit 0
-fi
-
-if [ "$(printf "no\nyes" | dmenu_vtc${args})" = "yes" ]; then
-    echo $cmd | ${SHELL:-"/bin/sh"} &
+else
+    exit 1
 fi

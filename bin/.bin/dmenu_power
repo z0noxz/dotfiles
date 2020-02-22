@@ -8,17 +8,6 @@ options="
     reboot
 "
 
-if [ "$1" = "off" ]; then
-    dmenu_confirm                                                           \
-        -p "shutdown:"                                                      \
-        -nb "#fb2222"                                                       \
-        -nf "#000000"                                                       \
-        -sb "#000000"                                                       \
-        -sf "#fb2222"                                                       \
-        -cmd "sudo runit-init 0"
-    return 0;
-fi
-
 case "$(printf "$options"                                                   \
 | sed -e '/^$/d' -e 's/^[ \t]*//'                                           \
 | sort                                                                      \

@@ -6,7 +6,7 @@ if [ "$1" = "--type" ]; then
 fi
 args=" -l 20 -p pass: $@"
 
-prefix="$HOME/.password-store"
+prefix="$XDG_DATA_HOME/pass"
 password_files="$(
     find "$prefix" -name "*.gpg"            \
     | sed -e "s,$prefix/,,g" -e "s,.gpg,,g"

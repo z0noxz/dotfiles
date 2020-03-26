@@ -6,16 +6,16 @@ STDIN="$(cat -)"
 
 case "$STDIN" in
 *.ff.gz)
-    cp "$STDIN" "$HOME/.wallpaper.ff.gz"
+    cp "$STDIN" "$XDG_CONFIG_HOME/wallpaper.ff.gz"
     ;;
 *.png | *.jpg | *.jpeg | *.gif | *.bmp)
     tmp="$(mktemp)"
     convert "$STDIN" png:- | png2ff | gzip -c > "$tmp" && \
-    mv "$tmp" "$HOME/.wallpaper.ff.gz"
+    mv "$tmp" "$XDG_CONFIG_HOME/wallpaper.ff.gz"
     ;;
 *)
     exit 1
     ;;
 esac
 
-swall "$HOME/.wallpaper.ff.gz"
+swall "$XDG_CONFIG_HOME/wallpaper.ff.gz"

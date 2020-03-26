@@ -1,6 +1,6 @@
 #!/bin/sh
 
-for vt in $HOME/.config/themes/*.vt
+for vt in "$XDG_CONFIG_HOME"/themes/*.vt
 do
     _r=""; _g=""; _b=""
     _n=${vt##*/}

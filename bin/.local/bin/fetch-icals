@@ -1,6 +1,6 @@
 #!/bin/sh
 
-_cal=$HOME/.data/calcurse/online
+_cal="$XDG_DATA_HOME"/calcurse/cals/online
 _tmp=$(mktemp /tmp/.cal.XXXXXX)
 _i=0
 _e=0

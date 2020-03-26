@@ -1,4 +1,3 @@
 #!/bin/sh
 
-#/bin/vim -S "$HOME/.config/vim/vimrc" "$@"
 /bin/vim "$@"

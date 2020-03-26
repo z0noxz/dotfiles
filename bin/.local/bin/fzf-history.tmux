@@ -10,7 +10,7 @@ _TTY=$(tmux display -p "#{pane_tty}" | sed "s=/dev/==")
 # make sure HISTFILE is set
 if [ ! -n "$HISTFILE" ]
 then
-    HISTFILE="$HOME/.cache/ksh/history"
+    HISTFILE="$HOME_CACHE_HOME/ksh/history"
 fi
 
 # get command from history file

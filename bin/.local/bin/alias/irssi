@@ -1,0 +1,12 @@
+#!/bin/sh
+
+irssi_pem="/tmp/.irssi.pem"
+
+storekey () {
+	touch "$irssi_pem"
+	chmod 600 "$irssi_pem"
+	pass irc/login-keys.pem > "$irssi_pem"
+}
+
+[ ! -f "$irssi_pem" ] && storekey
+proxychains4 -q irssi --home "$XDG_CONFIG_HOME/irssi" "$@"

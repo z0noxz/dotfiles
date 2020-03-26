@@ -1,3 +1,0 @@
-#!/bin/sh
-
-proxychains4 -q irssi --home "$XDG_CONFIG_HOME/irssi" "$@"

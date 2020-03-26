@@ -1,7 +1,7 @@
 #!/bin/sh
 
 ssh-add -D
-set -- $(ls ~/.password-store/ssh); for key
+set -- $(ls "$XDG_DATA_HOME/pass/ssh"); for key
 do
     pass ssh/$key/passphrase | ssh-add-pass "$HOME/.ssh/keys/.$key.key"     \
     2>&1 >/dev/null && printf '[%s+%s] identity added: %s%s%s\n'            \

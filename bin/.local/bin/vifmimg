@@ -17,7 +17,7 @@ _draw () {
         \"action\"      : \"add\",                                          \
         \"identifier\"  : \"$ID_PREVIEW\",                                  \
         \"x\"           : $_X,                                              \
-        \"y\"           : $_Y,                                              \
+        \"y\"           : $((_Y + 1)),                                      \
         \"width\"       : $_W,                                              \
         \"height\"      : $_H,                                              \
         \"path\"        : \"$1\"                                            \
@@ -27,6 +27,11 @@ _draw () {
 case "$1" in
 draw)
     _draw "$PWD/$6"
+    ;;
+drawmagick)
+    [ ! -d "$TMP/$6/" ] && mkdir -p "$TMP/$6/"
+    [ ! -f "$TMP/$6.png" ] && convert -resize 200x200 -density 1200 "$PWD/$6" "$TMP/$6.png"
+    _draw "$TMP/$6.png"
     ;;
 drawff)
     [ ! -d "$TMP/$6/" ] && mkdir -p "$TMP/$6/"

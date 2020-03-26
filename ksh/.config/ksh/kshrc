@@ -3,7 +3,7 @@
 # if not running interactively, don't do anything
 [ "${-#*i}" = "${-}" ] && return
 
-for sh in $HOME/.kshrc.d/*.sh
+for sh in "$XDG_CONFIG_HOME/ksh/kshrc.d/"*.sh
 do
     . $sh
 done

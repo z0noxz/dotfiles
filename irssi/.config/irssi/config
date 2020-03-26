@@ -54,7 +54,7 @@ servers = (
     chatnet = "Freenode";
     port = "6697";
     use_tls = "yes";
-    tls_cert = "~/.secret/irssi-login-keys/z0noxz.pem";
+    tls_cert = "/tmp/.irssi.pem";
     tls_verify = "yes";
     autoconnect = "no";
   },
@@ -63,7 +63,7 @@ servers = (
     chatnet = "FreenodeTor";
     port = "6697";
     use_tls = "yes";
-    tls_cert = "~/.secret/irssi-login-keys/z0noxz.pem";
+    tls_cert = "/tmp/.irssi.pem";
     tls_verify = "no";
     autoconnect = "no";
   },
@@ -72,7 +72,7 @@ servers = (
     chatnet = "OFTC";
     port = "6697";
     use_tls = "yes";
-    tls_cert = "~/.secret/irssi-login-keys/z0noxz.pem";
+    tls_cert = "/tmp/.irssi.pem";
     tls_verify = "yes";
     autoconnect = "no";
   }

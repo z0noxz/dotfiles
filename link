@@ -23,7 +23,7 @@ apply_action() {
 
         case "$_name" in
         # special folders
-        .config|.ssh)
+        .config|.ssh|.local)
             [ "$into" = "" ] && apply_action "$subdir" "$_name" "$action"
             ;;
         *)

@@ -1,6 +1,12 @@
 #!/bin/sh
 
 case "$1" in
+cpu)
+    echo "$(cut -f1 /tmp/.tmstat)%"
+    ;;
+mem)
+    echo "$(cut -f2 /tmp/.tmstat)%"
+    ;;
 battery)
     _PATH="/sys/class/power_supply/BAT0"
     _STATUS="$(cat "$_PATH/status")"
@@ -15,4 +21,6 @@ temp)
 
     echo "$_TEMP°c"
     ;;
+pkg)
+    echo "$([ -f /tmp/.xbps.queue ] && cat /tmp/.xbps.queue || echo 0)•"
 esac

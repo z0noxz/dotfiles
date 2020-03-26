@@ -86,6 +86,10 @@ fileviewer *.bmp,*.jpg,*.jpeg,*.png,*.xpm
     \ vifmimg draw %px %py %pw %ph %c
     \ %pc
     \ vifmimg clear
+fileviewer *.svg,*.ico
+    \ vifmimg drawmagick %px %py %pw %ph %c
+    \ %pc
+    \ vifmimg clear
 fileviewer *.ff,*.ff.xz,*.ff.gz,*.ff.bz
     \ vifmimg drawff %px %py %pw %ph %c
     \ %pc

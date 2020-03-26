@@ -20,7 +20,7 @@ ksh_completion_load () {
     [ ! -f "$_tmp_pkg_cmds" ] && \
         pkg | grep -e '^ [a-z]*' | grep -v -e '^[[:space:]]*$' | awk '{print $1;}' > "$_tmp_pkg_cmds"
     [ ! -f "$_tmp_pass_list" ] && \
-        find "$HOME/.password-store/" -type f | grep "gpg$" | sed 's/^.*\.password-store\///' | sed 's/\.gpg$//' > "$_tmp_pass_list"
+        find "$XDG_DATA_HOME/pass/" -type f | grep "gpg$" | sed 's/^.*\pass\///' | sed 's/\.gpg$//' > "$_tmp_pass_list"
     [ ! -f "$_tmp_man_list" ] && \
         man -k Nm~. | cut -d\( -f1 | tr -d , > "$_tmp_man_list"
     [ ! -f "$_tmp_op_list" ] && \
@@ -53,13 +53,13 @@ ksh_completion_load () {
 }
 
 ksh_completion_reload () {
-    rm "$_tmp_sv_list"
-    rm "$_tmp_mpvc_cmds"
-    rm "$_tmp_host_list"
-    rm "$_tmp_pkg_cmds"
-    rm "$_tmp_pass_list"
-    rm "$_tmp_man_list"
-    rm "$_tmp_op_list"
+    rm -f "$_tmp_sv_list"
+    rm -f "$_tmp_mpvc_cmds"
+    rm -f "$_tmp_host_list"
+    rm -f "$_tmp_pkg_cmds"
+    rm -f "$_tmp_pass_list"
+    rm -f "$_tmp_man_list"
+    rm -f "$_tmp_op_list"
 
     ksh_completion_load
 }

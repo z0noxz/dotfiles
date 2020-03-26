@@ -9,7 +9,7 @@ alias :r='. ~/.kshrc'
 alias :q='exit'
 
 # source aliases into functions
-for a in ~/.bin/alias/*; do
+for a in ~/.local/bin/alias/*; do
     unalias "${a##*/}"
     eval "${a##*/}() {
         . $a

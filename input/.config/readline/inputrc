@@ -1,0 +1,4 @@
+$include /etc/inputrc
+
+set keyseq-timeout 50
+set editing-mode vi

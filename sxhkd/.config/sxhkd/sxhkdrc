@@ -64,7 +64,7 @@ super + control + shift + {1-9}
     echo toggle tag {0-8} > /tmp/dwm.fifo
 # :spawn terminal (with tmux)
 super + Return
-    echo spawn $HOME/.bin/tmux-term > /tmp/dwm.fifo
+    echo spawn $HOME/.local/bin/tmux-term > /tmp/dwm.fifo
 # :spawn terminal
 super + shift + Return
     echo spawn $TERMINAL > /tmp/dwm.fifo
@@ -72,7 +72,7 @@ super + shift + Return
 # --- browsers ----------------------------------------------------------------
 # :vimb tabbed
 super + shift + w
-    ~/.bin/alias/vimb-tabbed
+    ~/.local/bin/alias/vimb-tabbed
 
 # --- dmenus ------------------------------------------------------------------
 # :run menu
@@ -95,7 +95,9 @@ super + shift + t
     dmenu_themes
 # :kill menu
 super + q
-    dmenu_kill
+    dmenu_confirm "Are you sure you want to close this client?" \
+    -w $(xdo id)                                                \
+    && xdo kill
 # :YouTube search menu
 super + y
     dmenu_yt_search

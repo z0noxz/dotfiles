@@ -1,0 +1,65 @@
+#!/bin/sh
+
+# only support for dwm implemented
+[ "$1" != "dwm" ] && exit
+
+userresources="$XDG_CONFIG_HOME"/X11/xresources
+usermodmap="$XDG_CONFIG_HOME"/X11/xmodmap
+sysresources=/etc/X11/xinit/.Xresources
+sysmodmap=/etc/X11/xinit/.Xmodmap
+
+# merge in defaults and keymaps
+[ -f "$sysresources"    ] && xrdb -merge "$sysresources"
+[ -f "$sysmodmap"       ] && xmodmap "$sysmodmap"
+[ -f "$userresources"   ] && xrdb -merge "$userresources"
+[ -f "$usermodmap"      ] && xmodmap "$usermodmap"
+
+# Disable terminal console beep
+xset b off
+
+# Remap caps lock to escape and use US international keyboard
+setxkbmap                               \
+	-layout us                          \
+	-variant altgr-intl                 \
+	-option caps:escape
+
+# Enable and set alsa options
+amixer sset "Capture"               "70%"
+amixer sset "Digital"               "60%"
+amixer sset "Dock Mic Boost"        "50%"
+amixer sset "Internal Mic Boost"    "50%"
+
+# Disable screen saving
+xset s off -dpms
+
+# Start unclutter (hide cursor after 5 seconds of idle time)
+unclutter -idle 5 &
+
+# dwm specific executions (yeah, kinda redundant but future proof)
+case "$1" in
+dwm)
+	# setup monitor
+	"$HOME"/.local/bin/monitor setup
+
+	# set wallpaper
+	[ -f "$XDG_CONFIG_HOME/wallpaper.ff.gz" ] \
+		&& cp "$XDG_CONFIG_HOME/wallpaper.ff.gz" /tmp/wallpaper.ff.gz \
+		&& swall /tmp/wallpaper.ff.gz
+
+	# start daemons
+	[ ! $(pidof -x monitor-daemon)  ] && "$HOME"/.local/bin/monitor daemon &
+	[ ! $(pidof -x mpvd)            ] && /usr/local/bin/mpvd &
+
+	# start prerequisites
+	[ ! $(pidof -x listen-new-mail) ] && "$HOME/.local/bin/listen-new-mail" &
+	[ ! $(pidof -x listen-new-pkg) ] && "$HOME/.local/bin/listen-new-pkg" &
+	[ ! $(pidof -x listen-ac-change) ] && "$HOME/.local/bin/listen-ac-change" &
+	[ ! $(pidof -x ztatus) ] && sh -c 'sleep .5; /usr/local/bin/ztatus -d' &
+
+	# start sxhkd (Simple X hotkey daemon)
+	sxhkd &
+
+	# ...and finally, start dwm
+	"$HOME"/.local/bin/dwm-run
+	;;
+esac

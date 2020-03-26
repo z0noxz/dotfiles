@@ -1,0 +1,30 @@
+#!/bin/sh
+
+site="$(fzf < $XDG_DATA_HOME/web-report/sites)"
+action="cat /var/log/quark.%s/*.u /var/log/quark.%s/current 2>/dev/null     \
+    | grep '^[^ ]* [0-9]\{4\}-[0-9]\{2\}-[0-9]\{2\}' 2>/dev/null            \
+    | goaccess 2>/dev/null                                                  \
+        --exclude-ip 10.0.0.0-10.255.255.255                                \
+        --log-format='%%^ %%dT%%tZ\t%%h\t%%s\t%%v\t%%U'                     \
+        --date-format='%%Y-%%m-%%d'                                         \
+        --time-format='%%H:%%M:%%S'                                         \
+        --html-prefs='{                                                     \
+            \"theme\"               : \"darkBlue\",                         \
+            \"perPage\"             : 10,                                   \
+            \"layout\"              : \"horizontal\",                       \
+            \"showTables\"          : true,                                 \
+            \"visitors\"            : {                                     \
+                \"plot\"            : {                                     \
+                    \"chartType\"   : \"area-spline\"                       \
+                }                                                           \
+            }                                                               \
+        }'                                                                  \
+        --ignore-panel='OS'                                                 \
+        --ignore-panel='BROWSERS'                                           \
+        --ignore-panel='VIRTUAL_HOSTS'                                      \
+        --ignore-panel='REFERRERS'                                          \
+        --ignore-panel='REFERRING_SITES'                                    \
+        --ignore-panel='KEYPHRASES'                                         \
+        -o html -"
+
+ssh anthra -t "$(printf "$action" "$site" "$site")" | vimb -c /dev/null -

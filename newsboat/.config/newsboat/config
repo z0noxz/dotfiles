@@ -1,6 +1,6 @@
 # https://github.com/newsboat/newsboat/blob/master/src/configcontainer.cpp
 browser                     "dmenu_url_open"
-cache-file                  ".data/newsboat/cache.db"
+cache-file                  ".cache/newsboat/cache.db"
 history-limit               0
 datetime-format             "%Y-%m-%d %H:%M"
 articlelist-format          " %4i  %D %?T? %-20T ? %t"

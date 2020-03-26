@@ -1,5 +1,0 @@
-#!/bin/sh
-
-/bin/calcurse               \
-    -D ~/.config/calcurse   \
-    -c ~/.data/calcurse/$(ls ~/.data/calcurse/ | fzf) "$@"

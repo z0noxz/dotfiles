@@ -14,13 +14,14 @@
 #   '/usr/bin/fbterm'                # or start a frame buffer console,
 #   '/usr/bin/cdm ~/.submenu.cdmrc'  # or go to a submenu :)
 # )
+# TODO :: rewrite for /bin/sh
 
 binlist=(
-    '/usr/bin/startx /home/z0noxz/.xinitrc dwm'
-    'echo /bin/tmux | /usr/bin/ksh -l'
-    '/usr/bin/ksh -l'
-    'sudo runit-init 6'
-    'sudo runit-init 0'
+    "/usr/bin/startx $XDG_CONFIG_HOME/X11/xinitrc dwm"
+    "echo /bin/tmux | /usr/bin/ksh -l"
+    "/usr/bin/ksh -l"
+    "sudo runit-init 6"
+    "sudo runit-init 0"
 )
 
 # List all program display names, one-by-one matched with $binlist.

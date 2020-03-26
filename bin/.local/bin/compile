@@ -25,7 +25,7 @@ case "$_FILE" in
             -dPDFSETTINGS=/prepress                                         \
             -sDEVICE=pdfwrite                                               \
             -dPrinted=false                                                 \
-            -sOutputFile="$_BASE.pdf" -
+            -sOutputFile="$_BASE.compiled.pdf" -
         ;;
 *\.ms)  preconv "$_FILE"                                                    \
         | refer                                                             \
@@ -42,7 +42,7 @@ case "$_FILE" in
             -dPDFSETTINGS=/prepress                                         \
             -sDEVICE=pdfwrite                                               \
             -dPrinted=false                                                 \
-            -sOutputFile="$_BASE.pdf" -
+            -sOutputFile="$_BASE.compiled.pdf" -
         ;;
 *\.md)  lowdown -s -Tms "$_FILE"                                            \
         | sed -e 's/\.nr PS 10/\.nr PS 12\n\.nr VS 18/g'                    \
@@ -56,6 +56,6 @@ case "$_FILE" in
             -dPDFSETTINGS=/prepress                                         \
             -sDEVICE=pdfwrite                                               \
             -dPrinted=false                                                 \
-            -sOutputFile="$_BASE.pdf" -
+            -sOutputFile="$_BASE.compiled.pdf" -
         ;;
 esac

@@ -42,7 +42,7 @@ ztatus)
     esac
 ;;
 sync-mail)
-    ~/.bin/mbsync-stdin < ~/.config/mbsync/template -a -V
+    ~/.local/bin/mbsync-stdin < ~/.config/mbsync/template -a -V
     for f in ~/mail/webmail-*/INBOX/new/*; do touch "$f" 2>/dev/null; done
 ;;
 dmenu|"")

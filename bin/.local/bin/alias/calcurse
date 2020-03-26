@@ -1,0 +1,6 @@
+#!/bin/sh
+
+/bin/calcurse                       \
+    -C "$XDG_CONFIG_HOME/calcurse"  \
+    -D "$XDG_DATA_HOME/calcurse"  \
+    -c "$XDG_DATA_HOME/calcurse/cals"/$(ls "$XDG_DATA_HOME/calcurse/cals" | fzf) "$@"

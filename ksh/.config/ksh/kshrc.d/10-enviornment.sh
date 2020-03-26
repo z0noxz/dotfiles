@@ -9,7 +9,6 @@ export HISTFILE="$HOME/.cache/ksh/history"
 export REFER="$HOME/documents/data/refer.bib"
 export GROFF_FONT_PATH="$HOME/.fonts/groff"
 export RTV_BROWSER="$BROWSER -y surf_rtv"
-export LESSHISTFILE="$HOME/.cache/less/history"
 export FZF_DEFAULT_OPTS="--bind='K:up,J:down,H:preview-up,L:preview-down'"
 export GREP_COLORS="\
 ms=01;31:\

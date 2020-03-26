@@ -42,8 +42,8 @@ ztatus)
     esac
 ;;
 sync-mail)
-    ~/.local/bin/mbsync-stdin < ~/.config/mbsync/template -a -V
-    for f in ~/mail/webmail-*/INBOX/new/*; do touch "$f" 2>/dev/null; done
+    "$HOME"/.local/bin/mbsync-stdin < "$XDG_CONFIG_HOME"/mbsync/template -a -V
+    for f in "$HOME"/mail/webmail-*/INBOX/new/*; do touch "$f" 2>/dev/null; done
 ;;
 dmenu|"")
     option="$(operations list | dmenu_vtc${@#dmenu})"

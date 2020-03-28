@@ -9,7 +9,7 @@ echo $LINE
 ssh backup -t df 2>/dev/null
 echo
 
-set -- $(ls ~/.password-store/backup/borg/nas); for repo
+set -- $(ls ~/.local/share/pass/backup/borg/nas); for repo
 do
     export BORG_REPO="backup:$repo"
     export BORG_PASSCOMMAND="pass backup/borg/nas/$repo/passphrase"

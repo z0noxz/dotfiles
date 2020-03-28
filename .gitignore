@@ -11,6 +11,7 @@ vimb/.config/vimb/*
 !vimb/.config/vimb/config
 !vimb/.config/vimb/scripts.js
 !vimb/.config/vimb/style.css
+ghci_history
 .netrwhist
 cookies
 *.log

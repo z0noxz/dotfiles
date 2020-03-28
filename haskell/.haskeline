@@ -1,0 +1,10 @@
+bellStyle: AudibleBell
+maxHistorySize: Just 100
+editMode: Vi
+completionType: ListCompletion
+completionPaging: True
+completionPromptLimit: Just 100
+listCompletionsImmediately: True
+historyDuplicates: AlwaysAdd
+customBindings: Map.empty
+customKeySequences: []

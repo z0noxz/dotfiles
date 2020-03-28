@@ -71,12 +71,14 @@ set strict-ssl=on
 nnoremap @ :set strict-ssl!<CR>r
 
 # shortcuts
+shortcut-add s=https://searx.info?q=$0
 shortcut-add d=https://duckduckgo.com/html?q=$0
+shortcut-add dd=https://duckduckgo.com/?q=$0
 shortcut-add a=https://wiki.archlinux.org/index.php?title=Special%%3ASearch&search=$0&go=Go
 
 # Set the shortcut as the default, that is the shortcut to be used if no
 # shortcut is given and the string to open is not an URI.
-shortcut-default d
+shortcut-default s
 
 # GUI color settings
 # Color scheme: Base16 Eighties (https://github.com/chriskempson/base16)

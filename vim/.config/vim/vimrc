@@ -24,15 +24,15 @@ set title                       " use 'titlestring' as window title
 
 "XDG {{{
 if empty("$XDG_CACHE_HOME")
-    let $XDG_CACHE_HOME="$HOME/.cache"
+	let $XDG_CACHE_HOME="$HOME/.cache"
 endif
 
 if empty("$XDG_CONFIG_HOME")
-    let $XDG_CONFIG_HOME="$HOME/.config"
+	let $XDG_CONFIG_HOME="$HOME/.config"
 endif
 
 if empty("$XDG_DATA_HOME")
-    let $XDG_DATA_HOME="$HOME/.local/share"
+	let $XDG_DATA_HOME="$HOME/.local/share"
 endif
 
 set directory=$XDG_CACHE_HOME/vim/swap,~/,/tmp
@@ -105,8 +105,8 @@ set ttimeoutlen=50              " only wait 50ms for a sequence to finish
 
 " tab jumping by mapping alt/meta+n to n+gt {{{
 for i in range(1, 9)
-    exec "nmap \e" . i . " <M-" . i . ">"
-    exec "nmap \<M-" . i . "> " . i . "gt"
+	exec "nmap \e" . i . " <M-" . i . ">"
+	exec "nmap \<M-" . i . "> " . i . "gt"
 endfor
 " }}}
 
@@ -205,19 +205,19 @@ autocmd BufEnter *.py inoremap <CR>
 
 " autocomplete {{{
 function! TabOrComplete(shift)
-    if col('.')>1 && strpart(getline('.'), col('.')-2, 3 ) =~ '^\w'
-        if (a:shift)
-            return "\<C-p>"
-        else
-            return "\<C-n>"
-        endif
-    else
-        if (a:shift)
-            return "\t" " force tab on shift
-        else
-            return SmartTab()
-        elseif
-    endif
+	if (col('.') > 1 && strpart(getline('.'), col('.') - 2, 3) =~ '^\w')
+		if (a:shift)
+			return "\<C-p>"
+		else
+			return "\<C-n>"
+		endif
+	else
+		if (a:shift)
+			return "\t" " force tab on shift
+		else
+			return SmartTab()
+		elseif
+	endif
 endfunction
 
 set dictionary+=/usr/share/dict/words
@@ -226,17 +226,17 @@ inoremap <silent> <tab> <C-r>=TabOrComplete(0)<CR>
 inoremap <silent> <S-tab> <C-r>=TabOrComplete(1)<CR>
 inoremap <silent> <bs> <C-r>=SmartDelete()<CR>
 if (&ft=='text' || &ft=='md' || &ft=='')
-    set complete+=k
+	set complete+=k
 endif
 " }}}
 
 " disable editing for read-only files {{{
 function! ReadOnlyNoEdit()
-    if &readonly == 1
-        set nomodifiable
-    else
-        set modifiable
-    endif
+	if &readonly == 1
+		set nomodifiable
+	else
+		set modifiable
+	endif
 endfunction
 
 autocmd BufRead * call ReadOnlyNoEdit()
@@ -244,75 +244,75 @@ autocmd BufRead * call ReadOnlyNoEdit()
 
 " clipboard through xclip {{{
 vnoremap <silent> <leader>y
-    \ y:call system("xclip -i -selection clipboard", @")<cr>
+	\ y:call system("xclip -i -selection clipboard", @")<cr>
 nnoremap <silent> <leader>p
-    \ :call setreg(@",system("xclip -o -selection clipboard"))<cr>p
+	\ :call setreg(@",system("xclip -o -selection clipboard"))<cr>p
 " }}}
 
 " filetype specific settings {{{
 filetype detect
 if (&ft == 'c' || &ft == 'cpp')
-    " syntax folding
-    set foldmethod=syntax
-    set foldnestmax=10
-    set nofoldenable
-    set foldlevel=2
+	" syntax folding
+	set foldmethod=syntax
+	set foldnestmax=10
+	set nofoldenable
+	set foldlevel=2
 
-    " disable wrapping
-    set formatoptions-=t
-    set nowrap
+	" disable wrapping
+	set formatoptions-=t
+	set nowrap
 elseif (&ft == ''
 \|| &ft == 'sh'
 \|| &ft == 'vim'
 \|| &ft == 'muttrc'
 \|| &ft == 'tmux')
-    " disable wrapping
-    set formatoptions-=t
+	" disable wrapping
+	set formatoptions-=t
 elseif (&ft == 'make')
-    set formatoptions-=t        " disable wrapping
-    set noexpandtab             " make requires tabs as separators
+	set formatoptions-=t        " disable wrapping
+	set noexpandtab             " make requires tabs as separators
 endif
 " }}}
 
 " save as root {{{
 command W
-    \ :execute ':silent w !sudo tee % > /dev/null'
-    \ | :edit!
+	\ :execute ':silent w !sudo tee % > /dev/null'
+	\ | :edit!
 " }}}
 
 function! ExpandOrEmpty(name)
-    try
-        return expand(a:name)
-    catch
-        return ""
-    endtry
+	try
+		return expand(a:name)
+	catch
+		return ""
+	endtry
 endfunction
 
 """" Move to separate "plugin" file
 function! FZFExec(fnc, input, opt)
-    let tempfile = tempname()
-    exe '!' . a:input . ' | fzf ' . a:opt . ' > ' . shellescape(tempfile)
-    try
-        let content = readfile(tempfile, '', -1)
-        if len(content) > 0
-            let value = content[0]
-            if value != ""
-                exe a:fnc . ' ' . value
-            endif
-        endif
-    catch " do nothing
-    finally
-        call delete(tempfile)
-    endtry
+	let tempfile = tempname()
+	exe '!' . a:input . ' | fzf ' . a:opt . ' > ' . shellescape(tempfile)
+	try
+		let content = readfile(tempfile, '', -1)
+		if len(content) > 0
+			let value = content[0]
+			if value != ""
+				exe a:fnc . ' ' . value
+			endif
+		endif
+	catch " do nothing
+	finally
+		call delete(tempfile)
+	endtry
 endfunction
 
 " if expand("%:p:h") !~ '^/tmp' | silent! lcd %:p:h | endif
 command! -nargs=1 FZFFile
 \ | execute ':silent call FZFExec('
-    \ . '<q-args>'
-    \ . ',"find ' . ExpandOrEmpty("%:p:h") . ' 2>/dev/null"'
-    \ . ',"--layout=reverse-list"'
-    \ . ')'
+	\ . '<q-args>'
+	\ . ',"find ' . ExpandOrEmpty("%:p:h") . ' 2>/dev/null"'
+	\ . ',"--layout=reverse-list"'
+	\ . ')'
 \ | execute ':redraw!'
 
 nnoremap <F7> :FZFFile open<CR>

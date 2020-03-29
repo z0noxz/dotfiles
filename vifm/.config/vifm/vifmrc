@@ -103,7 +103,7 @@ fileviewer *.gif
 fileviewer *
     \ grep -P "[^\x00-\x7F]" %c 2>&1 >/dev/null
     \ && mediainfo %c
-    \ || cat %c | fold -w $((%pw-1)) | sed -e 's/^/ /'
+    \ || cat %c | sed -e "s/\t/    /g" | fold -w $((%pw-1)) | sed -e 's/^/ /'
 
 " time format
 set timefmt="%Y-%m-%d %H:%M"

@@ -12,7 +12,7 @@ PREGRAB=false
 CASEINSENSITIVE=false
 
 VERTICALLINES="0"
-HEIGHT="20"
+HEIGHT="18"
 MONITOR=""
 PROMPT=""
 FONT="dnoxz_numerics:pixelsize=12:autohint=false"

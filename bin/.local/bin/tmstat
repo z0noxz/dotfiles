@@ -5,12 +5,12 @@ stat="/bin/vmstat"
 [ "$(pidof -o $$ -x "$(basename $0)")" != "" ] && return
 
 while :; do
-    cpu="$($stat 1 5 -w             \
-        | stdbuf -o0 cut -c1-       \
-        | tail -1                   \
-        | awk '{print 100-$15}')"
-    mem="$($stat -s                 \
-        | { read a b ; read c d ; echo $((100 * $c / $a)); })"
-    echo "$cpu\t$mem" > /tmp/.tmstat
+	cpu="$($stat 1 5 -w             \
+		| stdbuf -o0 cut -c1-       \
+		| tail -1                   \
+		| awk '{print 100-$15}')"
+	mem="$($stat -s                 \
+		| { read a b ; read c d ; echo $((100 * $c / $a)); })"
+	echo "$cpu\t$mem" > /tmp/.tmstat
 done
 

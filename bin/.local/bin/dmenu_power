@@ -2,10 +2,10 @@
 
 args=" -p power:"
 options="
-    lock
-    logout
-    shutdown
-    reboot
+	lock
+	logout
+	shutdown
+	reboot
 "
 
 case "$(printf "$options"                                                   \
@@ -13,14 +13,14 @@ case "$(printf "$options"                                                   \
 | sort                                                                      \
 | dmenu_vtc${args})" in
 lock)
-    /usr/local/bin/slock -m "locked at $(date "+%H:%M:%S";
-        echo '------------------';
-        fortune /usr/share/fortunes/off/black-humor)"
-    ;;
+	/usr/local/bin/slock -m "locked at $(date "+%H:%M:%S";
+		echo '------------------';
+		fortune /usr/share/fortunes/off/black-humor)"
+	;;
 logout)
-    killall dwm-run;;
+	killall dwm-run;;
 shutdown)
-    sudo runit-init 0;;
+	sudo runit-init 0;;
 reboot)
-    sudo runit-init 6;;
+	sudo runit-init 6;;
 esac

@@ -1,4 +1,4 @@
 #!/bin/sh
 while true; do
-    /usr/local/bin/dwm 2> "$XDG_CACHE_HOME/dwm/dwm.log"
+	/usr/local/bin/dwm 2> "$XDG_CACHE_HOME/dwm/dwm.log"
 done

@@ -9,70 +9,70 @@ _e=0
 set -- $(pass lists/icals | sed -e 's/ /__space__/g')
 for cal
 do
-    # reset placeholders for space
-    cal="$(echo $cal | sed -e 's/__space__/ /g')"
+	# reset placeholders for space
+	cal="$(echo $cal | sed -e 's/__space__/ /g')"
 
-    # extract name and link from 'name::[authcmd]url'
-    _name="${cal%%::*}"
-    _link="${cal##*::}"
+	# extract name and link from 'name::[authcmd]url'
+	_name="${cal%%::*}"
+	_link="${cal##*::}"
 
-    # extract user and password command if existing
-    _user="$(echo "$_link" | grep -o '^\[[^]]*\]' | sed 's:^.\(.*\).$:\1:')"
+	# extract user and password command if existing
+	_user="$(echo "$_link" | grep -o '^\[[^]]*\]' | sed 's:^.\(.*\).$:\1:')"
 
-    if [ "$_user" != "" ]
-    then
-        curl                                                                \
-            --silent "${_link##*]}"                                         \
-            --user "$(eval "$_user")"                                       \
-            --location                                                      \
-        | sed -e '1,/VEVENT/{/VEVENT/p;d}' -e '$d' >> $_tmp
-    else
-        curl                                                                \
-            --silent "$_link"                                               \
-            --location                                                      \
-        | sed -e '1,/VEVENT/{/VEVENT/p;d}' -e '$d' >> $_tmp
-    fi
+	if [ "$_user" != "" ]
+	then
+		curl                                                                \
+			--silent "${_link##*]}"                                         \
+			--user "$(eval "$_user")"                                       \
+			--location                                                      \
+		| sed -e '1,/VEVENT/{/VEVENT/p;d}' -e '$d' >> $_tmp
+	else
+		curl                                                                \
+			--silent "$_link"                                               \
+			--location                                                      \
+		| sed -e '1,/VEVENT/{/VEVENT/p;d}' -e '$d' >> $_tmp
+	fi
 
-    # download ical and strip header and footer
+	# download ical and strip header and footer
 
-    # get current event count
-    _j=$(grep -o '^BEGIN:VEVENT' $_tmp | wc -l)
+	# get current event count
+	_j=$(grep -o '^BEGIN:VEVENT' $_tmp | wc -l)
 
-    # check if new events were added
-    if [ $_i -ne $_j ]
-    then
-        printf '[+] %sfetched %d new events: %s%s%s\n'                      \
-            "$(tput setaf 10)"                                              \
-            "$((_j - _i))"                                                  \
-            "$(tput setaf 15)"                                              \
-            "$_name"                                                        \
-            "$(tput sgr0)"
-    else
-        printf '[-] %sfailed to fetch new events: %s%s%s\n'                 \
-            "$(tput setaf 9)"                                               \
-            "$(tput setaf 15)"                                              \
-            "$_name"                                                        \
-            "$(tput sgr0)"
-        _e=$((e + 1))
-    fi
+	# check if new events were added
+	if [ $_i -ne $_j ]
+	then
+		printf '[+] %sfetched %d new events: %s%s%s\n'                      \
+			"$(tput setaf 10)"                                              \
+			"$((_j - _i))"                                                  \
+			"$(tput setaf 15)"                                              \
+			"$_name"                                                        \
+			"$(tput sgr0)"
+	else
+		printf '[-] %sfailed to fetch new events: %s%s%s\n'                 \
+			"$(tput setaf 9)"                                               \
+			"$(tput setaf 15)"                                              \
+			"$_name"                                                        \
+			"$(tput sgr0)"
+		_e=$((e + 1))
+	fi
 
-    # set new count
-    _i=$_j
+	# set new count
+	_i=$_j
 done
 
 # add header and footer
 printf '%s\n%s\n%s\n%s'                                                     \
-    "BEGIN:VCALENDAR"                                                       \
-    "VERSION:2.0"                                                           \
-    "$(cat $_tmp)"                                                          \
-    "END:VCALENDAR" > $_tmp
+	"BEGIN:VCALENDAR"                                                       \
+	"VERSION:2.0"                                                           \
+	"$(cat $_tmp)"                                                          \
+	"END:VCALENDAR" > $_tmp
 
 # ask to continue on error count > 0
 if [ $_e -gt 0 ]
 then
-    printf '%d calendars failed to sync. Do you want to continue (y/N)? '   \
-        "$_e"
-    read answer && [ "$answer" = "${answer#[Yy]}" ] && return
+	printf '%d calendars failed to sync. Do you want to continue (y/N)? '   \
+		"$_e"
+	read answer && [ "$answer" = "${answer#[Yy]}" ] && return
 fi
 
 # clear calendar
@@ -87,7 +87,3 @@ cat $_tmp > $_cal
 
 # clean up
 rm $_tmp
-
-
-
-

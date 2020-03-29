@@ -8,14 +8,14 @@ targets="$(echo "$template" | grep -oe "$regex" | uniq)"
 tmpfile="$(mktemp /tmp/.msmtprc.XXXXXX)"
 
 load_encypted_conf() {
-    acc="$(pass mail/account-id | sed "$(($1+1))q;d")"
-    printf "%s" "$(pass mail/"$acc"/"$2")"
+	acc="$(pass mail/account-id | sed "$(($1+1))q;d")"
+	printf "%s" "$(pass mail/"$acc"/"$2")"
 }
 
 echo "$targets" | while read -r target; do
-    args="$(echo "$target" | sed -e "s/$regex/\1 \2/")"
-    template="$(echo "$template" | sed -e "s/$target/$(load_encypted_conf $args)/")"
-    echo "$template" > "$tmpfile"
+	args="$(echo "$target" | sed -e "s/$regex/\1 \2/")"
+	template="$(echo "$template" | sed -e "s/$target/$(load_encypted_conf $args)/")"
+	echo "$template" > "$tmpfile"
 done
 
 echo "$stdin" | msmtp -C "$tmpfile" $@

@@ -2,7 +2,7 @@
 
 if [ ! -f "$HOME/.tmp/.ssh-agent-init-done" ]
 then
-    ssh-agent-init
+	ssh-agent-init
 fi
 
 /bin/ssh "$@"

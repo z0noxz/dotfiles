@@ -8,65 +8,65 @@
 CHNL="$1"
 
 CHNL_REQ="{
-    \"jsonrpc\":\"2.0\",
-    \"method\":\"resolve\",
-    \"params\":{
-        \"urls\":[\"$CHNL\"]
-    }
+	\"jsonrpc\":\"2.0\",
+	\"method\":\"resolve\",
+	\"params\":{
+		\"urls\":[\"$CHNL\"]
+	}
 }"
 CHNL_QRY=".result | to_entries[].value | .value.title,.name,.value.description"
 LIST_REQ="{
-    \"jsonrpc\":\"2.0\",
-    \"method\":\"claim_search\",
-    \"params\":{
-        \"channel\":\"$CHNL\",
-        \"order_by\":[\"release_time\"],
-        \"page\":1,
-        \"page_size\":50
-    }
+	\"jsonrpc\":\"2.0\",
+	\"method\":\"claim_search\",
+	\"params\":{
+		\"channel\":\"$CHNL\",
+		\"order_by\":[\"release_time\"],
+		\"page\":1,
+		\"page_size\":50
+	}
 }"
 LIST_QRY=".result.items[] |
 .value.title,
 .value.description,
 \"https://api.lbry.tv/content/claims/\"
-    +.normalized_name+\"/\"
-    +.claim_id
-    +\"/stream\",
+	+.normalized_name+\"/\"
+	+.claim_id
+	+\"/stream\",
 .permanent_url,
 .meta.creation_timestamp
 "
 
 CHNL_DATA="$(curl \
-    --data-binary "$CHNL_REQ" \
-    -H 'content-type:text/plain;' \
-    --silent https://api.lbry.tv/api/v1/proxy \
+	--data-binary "$CHNL_REQ" \
+	-H 'content-type:text/plain;' \
+	--silent https://api.lbry.tv/api/v1/proxy \
 | jq "$CHNL_QRY" \
 | sed \
-    -e 's/^"//' \
-    -e 's/"$//' \
+	-e 's/^"//' \
+	-e 's/"$//' \
 | awk '
-    NR == 1 {print "<title>"$0"</title>"}
-    NR == 2 {print "<link>"$0"</link>"}
-    NR == 3 {print "<description><![CDATA["$0"]]></description>"}
+	NR == 1 {print "<title>"$0"</title>"}
+	NR == 2 {print "<link>"$0"</link>"}
+	NR == 3 {print "<description><![CDATA["$0"]]></description>"}
 '
 )"
 
 LIST_DATA="$(curl \
-    --data-binary "$LIST_REQ" \
-    -H 'content-type:text/plain;' \
-    --silent https://api.lbry.tv/api/v1/proxy \
+	--data-binary "$LIST_REQ" \
+	-H 'content-type:text/plain;' \
+	--silent https://api.lbry.tv/api/v1/proxy \
 | jq "$LIST_QRY" \
 | sed \
-    -e 's/^"//' \
-    -e 's/"$//' \
+	-e 's/^"//' \
+	-e 's/"$//' \
 | awk '
-    NR % 5 == 1 {print "<item>"}
-    NR % 5 == 1 {print "\t<title>"$0"</title>"}
-    NR % 5 == 2 {gsub(/\\n/, "</p><p>"); print "\t<description><![CDATA[<p>"$0"</p>]]></description>"}
-    NR % 5 == 3 {print "\t<link>"$0"</link>"}
-    NR % 5 == 4 {print "\t<guid isPermaLink=\"false\">"$0"</guid>"}
-    NR % 5 == 0 {print "\t<pubDate>"strftime("%a, %d %b %Y %T %z",$0)"</pubDate>"}
-    NR % 5 == 0 {print "</item>"}
+	NR % 5 == 1 {print "<item>"}
+	NR % 5 == 1 {print "\t<title>"$0"</title>"}
+	NR % 5 == 2 {gsub(/\\n/, "</p><p>"); print "\t<description><![CDATA[<p>"$0"</p>]]></description>"}
+	NR % 5 == 3 {print "\t<link>"$0"</link>"}
+	NR % 5 == 4 {print "\t<guid isPermaLink=\"false\">"$0"</guid>"}
+	NR % 5 == 0 {print "\t<pubDate>"strftime("%a, %d %b %Y %T %z",$0)"</pubDate>"}
+	NR % 5 == 0 {print "</item>"}
 ' \
 | sed 's:<p></p>::g'
 )"

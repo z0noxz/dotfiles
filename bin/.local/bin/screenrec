@@ -5,11 +5,11 @@ geo=$(xrectsel "%x %y %w %h")
 
 # record region on screen using backgrounded ffmpeg
 ffmpeg                                                                      \
-    -video_size $(echo $geo | awk {'print $3 "x" $4'})                      \
-    -framerate 25                                                           \
-    -f x11grab                                                              \
-    -i $(echo $geo | awk {'print ":0.0+" $1 "," $2'})                       \
-    -y "$HOME/screenrec-$(date +%Y-%m-%dT%H:%M:%S).mkv" &
+	-video_size $(echo $geo | awk {'print $3 "x" $4'})                      \
+	-framerate 25                                                           \
+	-f x11grab                                                              \
+	-i $(echo $geo | awk {'print ":0.0+" $1 "," $2'})                       \
+	-y "$HOME/screenrec-$(date +%Y-%m-%dT%H:%M:%S).mkv" &
 
 # store ffmpeg pid
 ffmpeg_pid=$!

@@ -9,30 +9,30 @@ options=""
 [ ! -f "$filename" ] && exit 1
 
 while true; do
-    # get current todo with line numbering
-    options="$(awk '{print NR,$0}' "$filename")"
+	# get current todo with line numbering
+	options="$(awk '{print NR,$0}' "$filename")"
 
-    # get choice
-    choice="$(printf "$options" | dmenu_vtc${args})"
+	# get choice
+	choice="$(printf "$options" | dmenu_vtc${args})"
 
-    # check if choice was made
-    [ ! -n "$choice" ] && exit
+	# check if choice was made
+	[ ! -n "$choice" ] && exit
 
-    # get existing record
-    existing="$(printf "$options" | grep "^${choice}$")"
+	# get existing record
+	existing="$(printf "$options" | grep "^${choice}$")"
 
-    # check if existing or new
-    if [ "$existing" != "" ] && [ "${existing%%\ *}" -eq "${existing%%\ *}" ]; then
-        case "$(printf 'copy\ndelete' | dmenu_vtc${args})" in
-        copy)
-            printf "${existing#*\ }" | \
-                xclip -i -sel p -f | \
-                xclip -i -sel c
-            exit ;;
-        delete)
-            sed -i "${existing%%\ *}d" "$filename" ;;
-        esac
-    else
-        echo "${choice}" >> "$filename"
-    fi
+	# check if existing or new
+	if [ "$existing" != "" ] && [ "${existing%%\ *}" -eq "${existing%%\ *}" ]; then
+		case "$(printf 'copy\ndelete' | dmenu_vtc${args})" in
+		copy)
+			printf "${existing#*\ }" | \
+				xclip -i -sel p -f | \
+				xclip -i -sel c
+			exit ;;
+		delete)
+			sed -i "${existing%%\ *}d" "$filename" ;;
+		esac
+	else
+		echo "${choice}" >> "$filename"
+	fi
 done

@@ -4,20 +4,20 @@ timeout="$1";
 
 case "$timeout" in
 ''|*[!0-9]*)
-    echo "usage: timer SECONDS"
-    ;;
+	echo "usage: timer SECONDS"
+	;;
 *)
-    while [ "$timeout" != "0" ]; do
-        printf '\b\b\b\b\b\b\b\b'
-        printf '%02d:%02d:%02d'   \
-            "$((timeout/3600))"     \
-            "$((timeout/60))"       \
-            "$((timeout % 60))";
+	while [ "$timeout" != "0" ]; do
+		printf '\b\b\b\b\b\b\b\b'
+		printf '%02d:%02d:%02d'   \
+		"$((timeout/3600))"     \
+		"$((timeout/60))"       \
+		"$((timeout % 60))";
 
-        timeout="$((timeout-1))";
-        sleep 1;
-    done
-    ;;
+		timeout="$((timeout-1))";
+		sleep 1;
+	done
+	;;
 esac
 printf '\b\b\b\b\b\b\b\b'
 printf '00:00:00\n'

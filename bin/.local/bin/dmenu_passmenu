@@ -2,23 +2,23 @@
 
 typeit=0
 if [ "$1" = "--type" ]; then
-    typeit=1; shift
+	typeit=1; shift
 fi
 args=" -l 20 -p pass: $@"
 
 prefix="$XDG_DATA_HOME/pass"
 password_files="$(
-    find "$prefix" -name "*.gpg"            \
-    | sed -e "s,$prefix/,,g" -e "s,.gpg,,g"
+	find "$prefix" -name "*.gpg"            \
+	| sed -e "s,$prefix/,,g" -e "s,.gpg,,g"
 )"
 
 password=$(echo "$password_files" | dmenu_vtc ${args})
 [ "$password" = "" ] && return
 
 if [ $typeit -eq 0 ]; then
-    pass show -c "$password" 2>/dev/null
+	pass show -c "$password" 2>/dev/null
 else
-    pass show "$password" 2>/dev/null       \
-    | { read -r pass; printf %s "$pass"; }  \
-    | xdotool type --clearmodifiers --file -
+	pass show "$password" 2>/dev/null       \
+	| { read -r pass; printf %s "$pass"; }  \
+	| xdotool type --clearmodifiers --file -
 fi

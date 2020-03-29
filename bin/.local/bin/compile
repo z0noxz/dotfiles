@@ -10,52 +10,52 @@ cd "$_DIR" || return
 
 case "$_FILE" in
 *\.ps.ms)  preconv "$_FILE"                                                 \
-        | refer                                                             \
-        | tapas                                                             \
-        | grap                                                              \
-        | pic -Tps                                                          \
-        | tbl -Tps                                                          \
-        | eqn -Tps                                                          \
-        | groff -k -ms $_ARGS -dpaper=a4 -P-pa4 -Tps                        \
-        | ps2pdf -                                                          \
-        | gs                                                                \
-            -q                                                              \
-            -dNOPAUSE                                                       \
-            -dBATCH                                                         \
-            -dPDFSETTINGS=/prepress                                         \
-            -sDEVICE=pdfwrite                                               \
-            -dPrinted=false                                                 \
-            -sOutputFile="$_BASE.compiled.pdf" -
-        ;;
+		| refer                                                             \
+		| tapas                                                             \
+		| grap                                                              \
+		| pic -Tps                                                          \
+		| tbl -Tps                                                          \
+		| eqn -Tps                                                          \
+		| groff -k -ms $_ARGS -dpaper=a4 -P-pa4 -Tps                        \
+		| ps2pdf -                                                          \
+		| gs                                                                \
+			-q                                                              \
+			-dNOPAUSE                                                       \
+			-dBATCH                                                         \
+			-dPDFSETTINGS=/prepress                                         \
+			-sDEVICE=pdfwrite                                               \
+			-dPrinted=false                                                 \
+			-sOutputFile="$_BASE.compiled.pdf" -
+		;;
 *\.ms)  preconv "$_FILE"                                                    \
-        | refer                                                             \
-        | tapas                                                             \
-        | grap                                                              \
-        | pic -Tpdf                                                         \
-        | tbl -Tpdf                                                         \
-        | eqn -Tpdf                                                         \
-        | groff -k -ms $_ARGS -dpaper=a4 -P-pa4 -P-e -Tpdf                  \
-        | gs                                                                \
-            -q                                                              \
-            -dNOPAUSE                                                       \
-            -dBATCH                                                         \
-            -dPDFSETTINGS=/prepress                                         \
-            -sDEVICE=pdfwrite                                               \
-            -dPrinted=false                                                 \
-            -sOutputFile="$_BASE.compiled.pdf" -
-        ;;
+		| refer                                                             \
+		| tapas                                                             \
+		| grap                                                              \
+		| pic -Tpdf                                                         \
+		| tbl -Tpdf                                                         \
+		| eqn -Tpdf                                                         \
+		| groff -k -ms $_ARGS -dpaper=a4 -P-pa4 -P-e -Tpdf                  \
+		| gs                                                                \
+			-q                                                              \
+			-dNOPAUSE                                                       \
+			-dBATCH                                                         \
+			-dPDFSETTINGS=/prepress                                         \
+			-sDEVICE=pdfwrite                                               \
+			-dPrinted=false                                                 \
+			-sOutputFile="$_BASE.compiled.pdf" -
+		;;
 *\.md)  lowdown -s -Tms "$_FILE"                                            \
-        | sed -e 's/\.nr PS 10/\.nr PS 12\n\.nr VS 18/g'                    \
-        | preconv                                                           \
-        | tbl -Tpdf                                                         \
-        | groff -k -ms $_ARGS -dpaper=a4 -P-pa4 -P-e -Tpdf                  \
-        | gs                                                                \
-            -q                                                              \
-            -dNOPAUSE                                                       \
-            -dBATCH                                                         \
-            -dPDFSETTINGS=/prepress                                         \
-            -sDEVICE=pdfwrite                                               \
-            -dPrinted=false                                                 \
-            -sOutputFile="$_BASE.compiled.pdf" -
-        ;;
+		| sed -e 's/\.nr PS 10/\.nr PS 12\n\.nr VS 18/g'                    \
+		| preconv                                                           \
+		| tbl -Tpdf                                                         \
+		| groff -k -ms $_ARGS -dpaper=a4 -P-pa4 -P-e -Tpdf                  \
+		| gs                                                                \
+			-q                                                              \
+			-dNOPAUSE                                                       \
+			-dBATCH                                                         \
+			-dPDFSETTINGS=/prepress                                         \
+			-sDEVICE=pdfwrite                                               \
+			-dPrinted=false                                                 \
+			-sOutputFile="$_BASE.compiled.pdf" -
+		;;
 esac

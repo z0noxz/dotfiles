@@ -11,11 +11,11 @@ term="$(echo -n | dmenu_vtc${args} -l 0)"
 options="$(printf "$term" | sscw-search -s)"
 [ "$options" = "" ] && exit 0
 titles="$(echo "$options" | \
-    cut -d "$(printf '\t')" -f 1,2 --output-delimiter=" - " | \
-    awk '{ print FNR " " $0 }')"
+	cut -d "$(printf '\t')" -f 1,2 --output-delimiter=" - " | \
+	awk '{ print FNR " " $0 }')"
 urls="$(echo "$options" | \
-    cut -d "$(printf '\t')" -f 4 | \
-    awk '{ print FNR " " $0 }')"
+	cut -d "$(printf '\t')" -f 4 | \
+	awk '{ print FNR " " $0 }')"
 title="$(printf "$titles" | dmenu_vtc${args} -l 20 -p "soundcloud > $term:")" # get -p from input and append "\b > $term:"
 
 [ "$title" = "" ] && exit 0

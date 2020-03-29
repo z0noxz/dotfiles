@@ -11,18 +11,21 @@ quality="premium_high" # premium_low, premium_medium, premium, premium_high
 [ "$key" = "" ] && exit 1
 
 # choose provider
-provider=$(printf "di.fm\nradiotunes.com\nrockradio.com\njazzradio.com" \
-    | sort | dmenu_vtc${args})
+provider="$(                                                                \
+	printf "di.fm\nradiotunes.com\nrockradio.com\njazzradio.com"            \
+	| sort                                                                  \
+	| dmenu_vtc${args}                                                      \
+)"
 
 # download list of available channels
-data="$(
-    curl -s "http://listen.$provider/$quality/"         \
-    | grep -Po "http://listen.*?pls"                    \
+data="$(                                                                    \
+	curl -s "http://listen.$provider/$quality/"                             \
+	| grep -Po "http://listen.*?pls"                                        \
 )"
-options="$(
-    echo $data                                          \
-    | tr ' ' '\n'                                       \
-    | sed 's/^.*\/premium_high\/\(.*\).pls/\1/g'        \
+options="$(                                                                 \
+	echo $data                                                              \
+	| tr ' ' '\n'                                                           \
+	| sed 's/^.*\/premium_high\/\(.*\).pls/\1/g'                            \
 )"
 
 # get url based on choice

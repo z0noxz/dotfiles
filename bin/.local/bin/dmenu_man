@@ -3,9 +3,9 @@
 args=" -p man: -l 30 $@"
 
 man="$(
-    man -k .                \
-    | dmenu_vtc${args}      \
-    | grep -oe '^[^(]*'     \
+	man -k .                \
+	| dmenu_vtc${args}      \
+	| grep -oe '^[^(]*'     \
 )"
 
 [ "$man" = "" ] && exit 1

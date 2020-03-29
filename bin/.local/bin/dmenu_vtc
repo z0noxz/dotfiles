@@ -23,79 +23,79 @@ SBCOLOR="$(readvtc 5)"
 WINDOW=""
 
 print_usage() {
-    echo "usage dmenu_vtc [-bfi] ..."
+	echo "usage dmenu_vtc [-bfi] ..."
 }
 
 handle_name() {
-    ARGNAME=""
-    case "$1" in
-    # flag arguments
-    -b)     BOTTOM=true;;
-    -f)     PREGRAB=true;;
-    -i)     CASEINSSENSITIVE=true;;
-    # name/value arguments
-    -l | -h | -m | -p | -fn | -nb | -nf | -sb | -sf | -w)
-    ARGNAME="$1";;
-    esac
+	ARGNAME=""
+	case "$1" in
+	# flag arguments
+	-b)     BOTTOM=true;;
+	-f)     PREGRAB=true;;
+	-i)     CASEINSSENSITIVE=true;;
+	# name/value arguments
+	-l | -h | -m | -p | -fn | -nb | -nf | -sb | -sf | -w)
+	ARGNAME="$1";;
+	esac
 }
 
 handle_value() {
-    case "$ARGNAME" in
-    -l)     VERTICALLINES="$1";;
-    -h)     HEIGHT="$1";;
-    -m)     MONITOR="$1";;
-    -p)     PROMPT="$1";;
-    -fn)    FONT="$1";;
-    -nf)    NFCOLOR="$1";;
-    -nb)    NBCOLOR="$1";;
-    -sf)    SFCOLOR="$1";;
-    -sb)    SBCOLOR="$1";;
-    -w)     WINDOW="$1";;
-    --)     break;;
-    -*)     echo "invalid option: $ARGNAME" 1>&2; exit 1;;
-    *)      break;;
-    esac
-    ARGNAME=""
+	case "$ARGNAME" in
+	-l)     VERTICALLINES="$1";;
+	-h)     HEIGHT="$1";;
+	-m)     MONITOR="$1";;
+	-p)     PROMPT="$1";;
+	-fn)    FONT="$1";;
+	-nf)    NFCOLOR="$1";;
+	-nb)    NBCOLOR="$1";;
+	-sf)    SFCOLOR="$1";;
+	-sb)    SBCOLOR="$1";;
+	-w)     WINDOW="$1";;
+	--)     break;;
+	-*)     echo "invalid option: $ARGNAME" 1>&2; exit 1;;
+	*)      break;;
+	esac
+	ARGNAME=""
 }
 
 # read arguments
 for var in "$@"; do
-    case "$var" in
-    --help) print_usage;;
-    -*)     handle_name "$var";;
-    *)      handle_value "$var";;
-    esac
+	case "$var" in
+	--help) print_usage;;
+	-*)     handle_name "$var";;
+	*)      handle_value "$var";;
+	esac
 done
 
 case $INX in
 1)
-    pgrep -x dmenu && exit
+	pgrep -x dmenu && exit
 
-    ARGS="                                                                  \
-    $([ "$BOTTOM" = true            ] && echo "-b")                         \
-    $([ "$PREGRAB" = true           ] && echo "-f")                         \
-    $([ "$CASEINSSENSITIVE" = true  ] && echo "-i")                         \
-    "
+	ARGS="                                                                  \
+	$([ "$BOTTOM" = true            ] && echo "-b")                         \
+	$([ "$PREGRAB" = true           ] && echo "-f")                         \
+	$([ "$CASEINSSENSITIVE" = true  ] && echo "-i")                         \
+	"
 
-    dmenu   $ARGS                                                           \
-    -l      "$VERTICALLINES"                                                \
-    -h      "$HEIGHT"                                                       \
-    -m      "$MONITOR"                                                      \
-    -p      "$PROMPT"                                                       \
-    -fn     "$FONT"                                                         \
-    -nf     "$NFCOLOR"                                                      \
-    -nb     "$NBCOLOR"                                                      \
-    -sf     "$SFCOLOR"                                                      \
-    -sb     "$SBCOLOR"                                                      \
-    -w      "$WINDOW"
+	dmenu   $ARGS                                                           \
+	-l      "$VERTICALLINES"                                                \
+	-h      "$HEIGHT"                                                       \
+	-m      "$MONITOR"                                                      \
+	-p      "$PROMPT"                                                       \
+	-fn     "$FONT"                                                         \
+	-nf     "$NFCOLOR"                                                      \
+	-nb     "$NBCOLOR"                                                      \
+	-sf     "$SFCOLOR"                                                      \
+	-sb     "$SBCOLOR"                                                      \
+	-w      "$WINDOW"
 ;;
 0)
-    # fix for 'cascading' fzfs
-    sleep 0.01
+	# fix for 'cascading' fzfs
+	sleep 0.01
 
-    fzf-tmux                                                                \
-        --reverse                                                           \
-        --select-1                                                          \
-        --exit-0
+	fzf-tmux                                                                \
+		--reverse                                                           \
+		--select-1                                                          \
+		--exit-0
 ;;
 esac

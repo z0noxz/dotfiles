@@ -1,5 +1,5 @@
 #!/bin/sh
 
 _file="$(find ${1:-.} -type f 2>/dev/null | fzf-tmux +m --select-1 --exit-0)"\
-    && ${EDITOR:-vim} "$_file"
+	&& ${EDITOR:-vim} "$_file"
 unset _file

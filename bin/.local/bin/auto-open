@@ -1,23 +1,23 @@
 #!/bin/sh
 
 case "$1" in
-    # images
-    *.jpg   |\
-    *.jpeg  |\
-    *.gif   |\
-    *.bmp   |\
-    *.png   |\
-    *.ff    |\
-    *.ff.bz |\
-    *.ff.xz |\
-    *.ff.gz \
-    ) (: "${IMG_VIEWER?}") 2>/dev/null && "$IMG_VIEWER" "$1" & exit;;
-    # pdfs
-    *.pdf \
-    ) (: "${PDF_VIEWER?}") 2>/dev/null && "$PDF_VIEWER" "$1" & exit;;
+	# images
+	*.jpg   |\
+	*.jpeg  |\
+	*.gif   |\
+	*.bmp   |\
+	*.png   |\
+	*.ff    |\
+	*.ff.bz |\
+	*.ff.xz |\
+	*.ff.gz \
+	) (: "${IMG_VIEWER?}") 2>/dev/null && "$IMG_VIEWER" "$1" & exit;;
+	# pdfs
+	*.pdf \
+	) (: "${PDF_VIEWER?}") 2>/dev/null && "$PDF_VIEWER" "$1" & exit;;
 esac
 
 case "$(file -b --mime-type "$1")" in
-    image/*) (: "${IMG_VIEWER?}") 2>/dev/null && "$IMG_VIEWER" "$1" & exit;;
+	image/*) (: "${IMG_VIEWER?}") 2>/dev/null && "$IMG_VIEWER" "$1" & exit;;
 esac
 

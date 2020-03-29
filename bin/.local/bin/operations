@@ -7,51 +7,51 @@ option="$([ "$1" = "-" ] && cat - || echo "$1")"
 
 case "$option" in
 list)
-    echo notify
-    echo sync-mail
-    echo ztatus
+	echo notify
+	echo sync-mail
+	echo ztatus
 ;;
 notify)
-    text="$(
-        [ "$2" = "" ]                                           \
-        && echo "$(echo -n | dmenu_vtc${args} -l 0 -p text:)"   \
-        || echo "$2"
-    )"
-    if [ "$text" != "" ]; then
-        ztatusc notify "$text"
-    else
-        operations dmenu ${args}
-    fi
+	text="$(
+		[ "$2" = "" ]                                           \
+		&& echo "$(echo -n | dmenu_vtc${args} -l 0 -p text:)"   \
+		|| echo "$2"
+	)"
+	if [ "$text" != "" ]; then
+		ztatusc notify "$text"
+	else
+		operations dmenu ${args}
+	fi
 ;;
 ztatus)
-    case "$2" in
-    list)
-        echo show-time
-    ;;
-    show-time)
-        ztatusc toggle datetime
-    ;;
-    dmenu|"")
-        option="$(operations ztatus list | dmenu_vtc${args} -p ztatus:)"
-        if [ "$option" != "" ]; then
-            operations ztatus "$option"
-        else
-            operations dmenu "${args}"
-        fi
-    ;;
-    esac
+	case "$2" in
+	list)
+		echo show-time
+	;;
+	show-time)
+		ztatusc toggle datetime
+	;;
+	dmenu|"")
+		option="$(operations ztatus list | dmenu_vtc${args} -p ztatus:)"
+		if [ "$option" != "" ]; then
+			operations ztatus "$option"
+		else
+			operations dmenu "${args}"
+		fi
+	;;
+	esac
 ;;
 sync-mail)
-    "$HOME"/.local/bin/mbsync-stdin < "$XDG_CONFIG_HOME"/mbsync/template -a -V
-    for f in "$HOME"/mail/webmail-*/INBOX/new/*; do touch "$f" 2>/dev/null; done
+	"$HOME"/.local/bin/mbsync-stdin < "$XDG_CONFIG_HOME"/mbsync/template -a -V
+	for f in "$HOME"/mail/webmail-*/INBOX/new/*; do touch "$f" 2>/dev/null; done
 ;;
 dmenu|"")
-    option="$(operations list | dmenu_vtc${@#dmenu})"
-    if [ "$option" != "" ]; then
-        operations "$option" "${@#dmenu}"
-    fi
+	option="$(operations list | dmenu_vtc${@#dmenu})"
+	if [ "$option" != "" ]; then
+		operations "$option" "${@#dmenu}"
+	fi
 ;;
 *)
-    printf 'the operation "%s" is not implamented.\n' "$option"
+	printf 'the operation "%s" is not implamented.\n' "$option"
 ;;
 esac

@@ -10,14 +10,14 @@ _TTY=$(tmux display -p "#{pane_tty}" | sed "s=/dev/==")
 # make sure HISTFILE is set
 if [ ! -n "$HISTFILE" ]
 then
-    HISTFILE="$HOME_CACHE_HOME/ksh/history"
+	HISTFILE="$HOME_CACHE_HOME/ksh/history"
 fi
 
 # get command from history file
 _CMD="$(cat "$HISTFILE"                                                     \
-    | sed -e 's/^[ \t]*//' -e 's/[ \t]*$//' -e '/^[[:space:]]*$/d'          \
-    | sort -u                                                               \
-    | fzf-tmux)"
+	| sed -e 's/^[ \t]*//' -e 's/[ \t]*$//' -e '/^[[:space:]]*$/d'          \
+	| sort -u                                                               \
+	| fzf-tmux)"
 
 # send keys to current session
 tmux send-keys "$_CMD"

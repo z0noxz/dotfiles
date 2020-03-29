@@ -11,12 +11,11 @@ echo
 
 set -- $(ls ~/.local/share/pass/backup/borg/nas); for repo
 do
-    export BORG_REPO="backup:$repo"
-    export BORG_PASSCOMMAND="pass backup/borg/nas/$repo/passphrase"
-
-    echo "status: $repo"
-    echo $LINE
-    /bin/borg info
-    /bin/borg list --last 6
-    echo
+	export BORG_REPO="backup:$repo"
+	export BORG_PASSCOMMAND="pass backup/borg/nas/$repo/passphrase"
+	echo "status: $repo"
+	echo $LINE
+	/bin/borg info
+	/bin/borg list --last 6
+	echo
 done

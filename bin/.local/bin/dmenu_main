@@ -2,52 +2,50 @@
 
 args=" -p main: -l 20"
 options="
-    bookmarks
-    radio
-    man
-    operations
-    pass
-    power
-    soundcloud
-    todo
-    youtube
+	bookmarks
+	radio
+	man
+	operations
+	pass
+	power
+	soundcloud
+	todo
+	youtube
 "
 
 get_fm_key () {
-    local key_location="/tmp/.di.fm.key"
-    local key_pass="di.fm/listen-key"
-
-    [ ! -f "$key_location" ]                                                \
-        && touch "$key_location"                                            \
-        && chmod 600 "$key_location"                                        \
-        && pass "$key_pass" > "$key_location"
-
-    echo $(cat "$key_location")
+	local key_location="/tmp/.di.fm.key"
+	local key_pass="di.fm/listen-key"
+	[ ! -f "$key_location" ]                                                \
+		&& touch "$key_location"                                            \
+		&& chmod 600 "$key_location"                                        \
+		&& pass "$key_pass" > "$key_location"
+	echo $(cat "$key_location")
 }
 
 while :; do
-    case "$(printf "$options"                                               \
-        | sed -e '/^$/d' -e 's/^[ \t]*//'                                   \
-        | sort                                                              \
-        | dmenu_vtc${args})" in
-    bookmarks)
-        dmenu_bookmarks "$XDG_DATA_HOME/bookmarks" ${args} -i -p bookmark:;;
-    radio)
-        dmenu_radio "$(get_fm_key)" ${args} -i -p provider:;;
-    man)
-        dmenu_man${args} -i -p man:;;
-    operations)
-        operations dmenu${args} -i -p operations:;;
-    pass)
-        dmenu_passmenu ${args} -i -p pass:;;
-    power)
-        dmenu_power${args} -i;;
-    soundcloud)
-        dmenu_sscw${args} -i;;
-    todo)
-        dmenu_todo "$XDG_DATA_HOME/todo" ${args} -i -p todo:;;
-    youtube)
-        dmenu_yt_search${args} -i;;
-    *) break;;
-    esac
+	case "$(printf "$options"                                               \
+	| sed -e '/^$/d' -e 's/^[ \t]*//'                                       \
+	| sort                                                                  \
+	| dmenu_vtc${args})" in
+	bookmarks)
+		dmenu_bookmarks "$XDG_DATA_HOME/bookmarks" ${args} -i -p bookmark:;;
+	radio)
+		dmenu_radio "$(get_fm_key)" ${args} -i -p provider:;;
+	man)
+		dmenu_man${args} -i -p man:;;
+	operations)
+		operations dmenu${args} -i -p operations:;;
+	pass)
+		dmenu_passmenu ${args} -i -p pass:;;
+	power)
+		dmenu_power${args} -i;;
+	soundcloud)
+		dmenu_sscw${args} -i;;
+	todo)
+		dmenu_todo "$XDG_DATA_HOME/todo" ${args} -i -p todo:;;
+	youtube)
+		dmenu_yt_search${args} -i;;
+	*) break;;
+	esac
 done

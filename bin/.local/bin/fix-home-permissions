@@ -1,20 +1,20 @@
 #!/bin/sh
 
 mount | grep "[[:space:]]$HOME" 2>&1 >/dev/null && { 
-    tput setaf 1
-    echo "there is something mounted under '$HOME'"
-    tput sgr0
-    exit 1
+	tput setaf 1
+	echo "there is something mounted under '$HOME'"
+	tput sgr0
+	exit 1
 }
 
 echo "All permissions are about to be changed."
 
 read -r -p "Are you sure? [y/N] " response
 case "$response" in
-    [yY][eE][sS]|[yY])
-        # set a max of rwx --- --- for all files and directories (non symlinks)
-        find /home/* \! -type l -perm /g+rwx,o+rwx -print -exec chmod g-rwx,o-rwx '{}' +
-    ;;
-    *) exit 0 ;;
+	[yY][eE][sS]|[yY])
+		# set a max of rwx --- --- for all files and directories (non symlinks)
+		find /home/* \! -type l -perm /g+rwx,o+rwx -print -exec chmod g-rwx,o-rwx '{}' +
+	;;
+	*) exit 0 ;;
 esac
 

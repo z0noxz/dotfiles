@@ -20,13 +20,13 @@ printf '%s'                                                                 \
 ' http://www.malwaredomainlist.com/hostslist/hosts.txt'                     \
 | sed -e 's/^$//g'); for x
 do
-    printf "Getting '%s' domain list...\n" "$(echo $x | cut -d / -f 3)" 1>&2
-    curl -L -s "$x"                                                         \
-    | sed -e 's/\r//'                                                       \
-    | grep -v '#\|^::1\|[[:space:]]localhost$'                              \
-    | tr '\t' ' '                                                           \
-    | sed -e '/^[\s]*$/d' -e 's/^[^\s]*\s//'                                \
-    | sort >> $_TEMP_FILE
+	printf "Getting '%s' domain list...\n" "$(echo $x | cut -d / -f 3)" 1>&2
+	curl -L -s "$x"                                                         \
+	| sed -e 's/\r//'                                                       \
+	| grep -v '#\|^::1\|[[:space:]]localhost$'                              \
+	| tr '\t' ' '                                                           \
+	| sed -e '/^[\s]*$/d' -e 's/^[^\s]*\s//'                                \
+	| sort >> $_TEMP_FILE
 done
 
 cat $_TEMP_FILE                                                             \

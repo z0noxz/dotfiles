@@ -13,72 +13,72 @@ readonly _H="$5"
 [ ! -e "$FIFO_UEBERZUG" ] && exit
 
 _draw () {
-    echo "{                                                                 \
-        \"action\"      : \"add\",                                          \
-        \"identifier\"  : \"$ID_PREVIEW\",                                  \
-        \"x\"           : $_X,                                              \
-        \"y\"           : $((_Y + 1)),                                      \
-        \"width\"       : $_W,                                              \
-        \"height\"      : $_H,                                              \
-        \"path\"        : \"$1\"                                            \
-    }" > "$FIFO_UEBERZUG"
+	echo "{                                                                 \
+		\"action\"      : \"add\",                                          \
+		\"identifier\"  : \"$ID_PREVIEW\",                                  \
+		\"x\"           : $_X,                                              \
+		\"y\"           : $((_Y + 1)),                                      \
+		\"width\"       : $_W,                                              \
+		\"height\"      : $_H,                                              \
+		\"path\"        : \"$1\"                                            \
+	}" > "$FIFO_UEBERZUG"
 }
 
 case "$1" in
 draw)
-    _draw "$PWD/$6"
-    ;;
+	_draw "$PWD/$6"
+	;;
 drawmagick)
-    [ ! -d "$TMP/$6/" ] && mkdir -p "$TMP/$6/"
-    [ ! -f "$TMP/$6.png" ] && convert -resize 200x200 -density 1200 "$PWD/$6" "$TMP/$6.png"
-    _draw "$TMP/$6.png"
-    ;;
+	[ ! -d "$TMP/$6/" ] && mkdir -p "$TMP/$6/"
+	[ ! -f "$TMP/$6.png" ] && convert -resize 200x200 -density 1200 "$PWD/$6" "$TMP/$6.png"
+	_draw "$TMP/$6.png"
+	;;
 drawff)
-    [ ! -d "$TMP/$6/" ] && mkdir -p "$TMP/$6/"
-    if [ ! -f "$TMP/$6.png" ]; then
-        case "$6" in
-        *.ff.bz)    bzip2 -d -c "$PWD/$6" | ff2png > "$TMP/$6.png"          ;;
-        *.ff.gz)    gzip -d -c "$PWD/$6" | ff2png > "$TMP/$6.png"           ;;
-        *.ff.xz)    xz -d -c "$PWD/$6" | ff2png > "$TMP/$6.png"             ;;
-        *.ff)       ff2png < "$PWD/$6" > "$TMP/$6.png"                      ;;
-        *)          exit                                                    ;;
-        esac
-        convert -resize 512x512\> "$TMP/$6.png" "$TMP/$6.png"
-    fi
-    _draw "$TMP/$6.png"
-    ;;
+	[ ! -d "$TMP/$6/" ] && mkdir -p "$TMP/$6/"
+	if [ ! -f "$TMP/$6.png" ]; then
+		case "$6" in
+		*.ff.bz)    bzip2 -d -c "$PWD/$6" | ff2png > "$TMP/$6.png"          ;;
+		*.ff.gz)    gzip -d -c "$PWD/$6" | ff2png > "$TMP/$6.png"           ;;
+		*.ff.xz)    xz -d -c "$PWD/$6" | ff2png > "$TMP/$6.png"             ;;
+		*.ff)       ff2png < "$PWD/$6" > "$TMP/$6.png"                      ;;
+		*)          exit                                                    ;;
+		esac
+		convert -resize 512x512\> "$TMP/$6.png" "$TMP/$6.png"
+	fi
+	_draw "$TMP/$6.png"
+	;;
 videopreview)
-    [ ! -d "$TMP/$6/" ] && mkdir -p "$TMP/$6/"
-    [ ! -f "$TMP/$6.png" ] && ffmpegthumbnailer -i "$PWD/$6" -o "$TMP/$6.png" -s 0 -q 10
-    _draw "$TMP/$6.png"
-    ;;
+	[ ! -d "$TMP/$6/" ] && mkdir -p "$TMP/$6/"
+	[ ! -f "$TMP/$6.png" ] && ffmpegthumbnailer -i "$PWD/$6" -o "$TMP/$6.png" -s 0 -q 10
+	_draw "$TMP/$6.png"
+	;;
 gifpreview)
-    [ ! -d "$TMP/$6/" ] && mkdir -p "$TMP/$6/" && convert -coalesce "$PWD/$6" "$TMP/$6/$6.png"
-    if [ -n "$PLAY_GIF" ]; then
-        for frame in $(find "$TMP/$6" -name "*.png" | sort -V); do
-            _draw "$frame"
-            sleep .07
-        done
-    else
-        _draw "$TMP/$6/$6-0.png"
-    fi
-    ;;
+	[ ! -d "$TMP/$6/" ] && mkdir -p "$TMP/$6/" && convert -coalesce "$PWD/$6" "$TMP/$6/$6.png"
+	if [ -n "$PLAY_GIF" ]; then
+		for frame in $(find "$TMP/$6" -name "*.png" | sort -V); do
+			_draw "$frame"
+			sleep .07
+		done
+	else
+		_draw "$TMP/$6/$6-0.png"
+	fi
+	;;
 epubpreview)
-    [ ! -d "$TMP/$6/" ] && mkdir -p "$TMP/$6/"
-    [ ! -f "$TMP/$6.png" ] && epub-thumbnailer "$6" "$TMP/$6.png" 512
-    _draw "$TMP/$6.png"
-    ;;
+	[ ! -d "$TMP/$6/" ] && mkdir -p "$TMP/$6/"
+	[ ! -f "$TMP/$6.png" ] && epub-thumbnailer "$6" "$TMP/$6.png" 512
+	_draw "$TMP/$6.png"
+	;;
 pdfpreview)
-    [ ! -d "$TMP/$6/" ] && mkdir -p "$TMP/$6/"
-    [ ! -f "$TMP/$6.png" ] && pdftoppm -png -singlefile "$6" "$TMP/$6"
-    _draw "$TMP/$6.png"
-    ;;
+	[ ! -d "$TMP/$6/" ] && mkdir -p "$TMP/$6/"
+	[ ! -f "$TMP/$6.png" ] && pdftoppm -png -singlefile "$6" "$TMP/$6"
+	_draw "$TMP/$6.png"
+	;;
 clear)
-    echo "{                                                                 \
-        \"action\"      : \"remove\",                                       \
-        \"identifier\"  : \"$ID_PREVIEW\"                                   \
-    }" > "$FIFO_UEBERZUG"
-    [ -n "$AUTO_REMOVE" ] && [ -f "$TMP/$6.png" ] && rm -f "$TMP/$6.png"
-    [ -n "$AUTO_REMOVE" ] && [ -d "$TMP/$6/" ] && rm -rf "$TMP/$6/"
-    ;;
+	echo "{                                                                 \
+		\"action\"      : \"remove\",                                       \
+		\"identifier\"  : \"$ID_PREVIEW\"                                   \
+	}" > "$FIFO_UEBERZUG"
+	[ -n "$AUTO_REMOVE" ] && [ -f "$TMP/$6.png" ] && rm -f "$TMP/$6.png"
+	[ -n "$AUTO_REMOVE" ] && [ -d "$TMP/$6/" ] && rm -rf "$TMP/$6/"
+	;;
 esac

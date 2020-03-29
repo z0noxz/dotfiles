@@ -6,33 +6,33 @@ CD_MAX_CLIP_THRESH=$((CD_MAX_CLIP + 100))
 last_id=""
 
 die() {
-    echo "$@"
-    exit 1
+	echo "$@"
+	exit 1
 }
 
 empty() {
-    case "$1" in
-    *[![:blank:]]*) return 1;;
-    *) return 0;;
-    esac
+	case "$1" in
+	*[![:blank:]]*) return 1;;
+	*) return 0;;
+	esac
 }
 
 partof() {
-    [ -z "$1" ] && return 1;
-    [ -z "$2" ] && return 1;
-    case "$1" in
-    *"$2") return 0;;
-    "$2"*) return 0;;
-    esac
-    case "$2" in
-    *"$1") return 0;;
-    "$1"*) return 0;;
-    esac
-    return 1;
+	[ -z "$1" ] && return 1;
+	[ -z "$2" ] && return 1;
+	case "$1" in
+	*"$2") return 0;;
+	"$2"*) return 0;;
+	esac
+	case "$2" in
+	*"$1") return 0;;
+	"$1"*) return 0;;
+	esac
+	return 1;
 }
 
 getid() {
-    echo "$(echo "$@" | md5sum | cut -d' ' -f1)"
+	echo "$(echo "$@" | md5sum | cut -d' ' -f1)"
 }
 
 [ -z "$1" ] && die "selection is missing"
@@ -46,35 +46,35 @@ command -v timeout >/dev/null 2>&1 || die "'timeout' program is missing"
 command -v xsel >/dev/null 2>&1 || die "'xsel' program is missing"
 
 case "$selection" in
-    primary|secondary|clipboard);;
-    *) die "'$selection' is not a valid selection";
+	primary|secondary|clipboard);;
+	*) die "'$selection' is not a valid selection";
 esac
 
 while clipnotify; do
-    data="$(timeout 1 xsel --logfile /dev/null -o --"$selection")"
+	data="$(timeout 1 xsel --logfile /dev/null -o --"$selection")"
 
-    # check if empty
-    empty "$data" && continue
+	# check if empty
+	empty "$data" && continue
 
-    # check if identical to last
-    [ "$data" = "$last_entry" ] && continue
+	# check if identical to last
+	[ "$data" = "$last_entry" ] && continue
 
-    # check if last or current are parts of each other, and delete last if so.
-    if partof "$data" "$last_entry"; then
-        rm -- "/tmp/.clipd/$USER/$last_id"
-    fi
+	# check if last or current are parts of each other, and delete last if so.
+	if partof "$data" "$last_entry"; then
+		rm -- "/tmp/.clipd/$USER/$last_id"
+	fi
 
-    last_id="$selection.$(getid "$data")"
-    last_entry="$data"
+	last_id="$selection.$(getid "$data")"
+	last_entry="$data"
 
-    mkdir -m0700 -p -- "/tmp/.clipd/$USER/"
-    echo "$data" > "/tmp/.clipd/$USER/$last_id"
-    chmod 600 -- "/tmp/.clipd/$USER/$last_id"
+	mkdir -m0700 -p -- "/tmp/.clipd/$USER/"
+	echo "$data" > "/tmp/.clipd/$USER/$last_id"
+	chmod 600 -- "/tmp/.clipd/$USER/$last_id"
 
-    # remove old entries if threshold is met
-    if [ ! -z "$CD_MAX_CLIP" ] && \
-    [ "$(ls "/tmp/.clipd/$USER/" | wc -l)" -gt "$CD_MAX_CLIP_THRESH" ]; then
-        ls -dt "/tmp/.clipd/$USER/"* | sed -e "1,${CD_MAX_CLIP}d" \
-        | xargs -d '\n' rm
-    fi
+	# remove old entries if threshold is met
+	if [ ! -z "$CD_MAX_CLIP" ] && \
+	[ "$(ls "/tmp/.clipd/$USER/" | wc -l)" -gt "$CD_MAX_CLIP_THRESH" ]; then
+		ls -dt "/tmp/.clipd/$USER/"* | sed -e "1,${CD_MAX_CLIP}d" \
+		| xargs -d '\n' rm
+	fi
 done

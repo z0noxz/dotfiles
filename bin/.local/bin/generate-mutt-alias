@@ -9,16 +9,16 @@ SQL_CMD="$SQL_CMD FROM contacts JOIN users ON users.user_id=contacts.user_id"
 SQL_CMD="$SQL_CMD WHERE users.username=\"$1\""
 SSH_CMD="$(cat <<'EOT'
 sudo /usr/bin/mysql
-    --skip-column-names
-    -D roundcubemail
-    -e
+	--skip-column-names
+	-D roundcubemail
+	-e
 EOT
 )"
 SSH_CMD="$SSH_CMD'$SQL_CMD'"
 SSH_CMD="$SSH_CMD$(cat <<'EOT'
 | awk
-    -F '\\t'
-    '{print "alias "tolower(substr($1,1,3)substr($2,1,3))" "$3" ("$1" "$2")"}'
+	-F '\\t'
+	'{print "alias "tolower(substr($1,1,3)substr($2,1,3))" "$3" ("$1" "$2")"}'
 EOT
 )"
 

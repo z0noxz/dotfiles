@@ -5,6 +5,7 @@ search_phrase="$(echo -n | dmenu_vtc${args}                                 \
 	| sed 's/\ /+/g'                                                        \
 	| hexdump -v -e '/1 "%02x"'                                             \
 	| sed 's/\(..\)/%\1/g')"
+[ "$search_phrase" = "" ] && exit 1
 
 search_results="$(curl 2>/dev/null                                          \
 	"https://www.youtube.com/results?search_query=$search_phrase"           \
@@ -52,7 +53,7 @@ done
 
 choice="$(echo $options | sed '/^\s*$/d' | sort | dmenu_vtc${args})"
 
-[ "$choice" = "" ] && exit 0
+[ "$choice" = "" ] && exit 1
 
 choice="$(printf "$data" | grep ^${choice%% *})"
 dmenu_url_open "https://www.youtube.com/watch?v=${choice#* }"

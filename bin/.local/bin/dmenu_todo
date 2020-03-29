@@ -14,9 +14,7 @@ while true; do
 
 	# get choice
 	choice="$(printf "$options" | dmenu_vtc${args})"
-
-	# check if choice was made
-	[ ! -n "$choice" ] && exit
+	[ "$choice" = "" ] && exit 1
 
 	# get existing record
 	existing="$(printf "$options" | grep "^${choice}$")"

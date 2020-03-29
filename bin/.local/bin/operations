@@ -49,6 +49,8 @@ dmenu|"")
 	option="$(operations list | dmenu_vtc${@#dmenu})"
 	if [ "$option" != "" ]; then
 		operations "$option" "${@#dmenu}"
+	else
+		exit 1
 	fi
 ;;
 *)

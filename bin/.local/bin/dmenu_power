@@ -23,4 +23,6 @@ shutdown)
 	sudo runit-init 0;;
 reboot)
 	sudo runit-init 6;;
+"")
+	exit 1;;
 esac

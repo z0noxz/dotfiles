@@ -13,7 +13,7 @@ password_files="$(
 )"
 
 password=$(echo "$password_files" | dmenu_vtc ${args})
-[ "$password" = "" ] && return
+[ "$password" = "" ] && exit 1
 
 if [ $typeit -eq 0 ]; then
 	pass show -c "$password" 2>/dev/null

@@ -7,15 +7,24 @@ key="$1"; shift
 options=""
 args=" $@"
 quality="premium_high" # premium_low, premium_medium, premium, premium_high
+providers="
+	di.fm
+	radiotunes.com
+	rockradio.com
+	jazzradio.com
+"
 
 [ "$key" = "" ] && exit 1
 
 # choose provider
 provider="$(                                                                \
-	printf "di.fm\nradiotunes.com\nrockradio.com\njazzradio.com"            \
+	printf "$providers"                                                     \
+	| sed -e '/^$/d' -e 's/^[ \t]*//'                                       \
 	| sort                                                                  \
 	| dmenu_vtc${args}                                                      \
 )"
+
+[ "$provider" = "" ] && exit 1
 
 # download list of available channels
 data="$(                                                                    \
@@ -46,4 +55,4 @@ curl -s "$choice" | sed "s/\(File[0-9].*$\)/\1?$key/g" > "$tmp"
 mpvc load "$tmp"
 
 # remove playlist after 60 seconds
-sleep 60 && rm "$tmp"
+(sleep 60 && rm "$tmp") &

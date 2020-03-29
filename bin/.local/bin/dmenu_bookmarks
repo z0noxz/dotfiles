@@ -20,6 +20,8 @@ done < "$filename"
 
 # get url based on choice
 choice=$(printf "$options" | sort | dmenu_vtc${args})
+[ "$choice" = "" ] && exit 1
+
 choice=$(printf "$data" | grep "$choice")
 choice="${choice##*\ }"
 

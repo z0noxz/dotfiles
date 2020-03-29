@@ -7,9 +7,9 @@ options=""
 term=""
 
 term="$(echo -n | dmenu_vtc${args} -l 0)"
-[ "$term" = "" ] && exit 0
+[ "$term" = "" ] && exit 1
 options="$(printf "$term" | sscw-search -s)"
-[ "$options" = "" ] && exit 0
+[ "$options" = "" ] && exit 1
 titles="$(echo "$options" | \
 	cut -d "$(printf '\t')" -f 1,2 --output-delimiter=" - " | \
 	awk '{ print FNR " " $0 }')"
@@ -18,8 +18,6 @@ urls="$(echo "$options" | \
 	awk '{ print FNR " " $0 }')"
 title="$(printf "$titles" | dmenu_vtc${args} -l 20 -p "soundcloud > $term:")" # get -p from input and append "\b > $term:"
 
-[ "$title" = "" ] && exit 0
+[ "$title" = "" ] && exit 1
 url="$(printf "$urls" | grep "^${title%% *} ")"
 dmenu_url_open "${url#* }" "${title#* }"
-
-exit 0

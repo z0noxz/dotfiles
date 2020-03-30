@@ -48,13 +48,13 @@ dwm)
 
 	# start daemons
 	[ ! $(pidof -x monitor-daemon)  ] && "$HOME"/.local/bin/monitor daemon &
-	[ ! $(pidof -x mpvd)            ] && /usr/local/bin/mpvd &
+	[ ! $(pidof -x mpvd)            ] && "$HOME"./local/bin/mpvd &
 
 	# start prerequisites
 	[ ! $(pidof -x listen-new-mail) ] && "$HOME/.local/bin/listen-new-mail" &
 	[ ! $(pidof -x listen-new-pkg) ] && "$HOME/.local/bin/listen-new-pkg" &
 	[ ! $(pidof -x listen-ac-change) ] && "$HOME/.local/bin/listen-ac-change" &
-	[ ! $(pidof -x ztatus) ] && sh -c 'sleep .5; /usr/local/bin/ztatus -d' &
+	[ ! $(pidof -x ztatus) ] && sh -c 'sleep .5; /usr/local/bin/ztatus' &
 
 	# start sxhkd (Simple X hotkey daemon)
 	sxhkd &

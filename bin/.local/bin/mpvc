@@ -1,0 +1,160 @@
+#!/bin/sh
+
+mpvdsock="/tmp/mpvd.sock"
+cmd_socat="$(command -v socat) - '$mpvdsock'"
+cmd_jq="$(command -v jq)"
+
+print_help() {
+    echo "Usage: mpvc ACTION [ARGS]\n"
+    echo "ACTIONS:"
+    echo " append         append file to playlist."
+    echo " help           print this help message."
+    echo " load           load file, and override playlist."
+    echo " next           go to next track."
+    echo " prev           go to previous track."
+    echo " seek           seek (-)n seconds"
+    echo " toggle         toogle play and pause."
+    echo " lower          lower volume 10 units"
+    echo " mute           toggle mute"
+    echo " raise          raise volume 10 units"
+    echo " "
+    echo "EXTRA:"
+    echo " ytdl-format    set ytdl-format"
+    echo " "
+    echo "ALSA:"
+    echo " alower         alsa lower 5%"
+    echo " amute          alsa mute"
+    echo " araise         alsa raise 5%"
+}
+
+send_command() {
+    local input=""
+    for var in "$@"; do
+        [ "$input" != "" ] && input="$input, "
+	input="$input\"$var\""
+    done
+    printf '{ "command": [%s] }\n' "$input" | $cmd_socat
+}
+
+get_path() {
+    local path="$(readlink -f "$@")"
+    if [ -f "$path" ]; then
+        echo "$path"
+    else
+        echo "$@"
+    fi
+}
+
+notify_vol() {
+    case $1 in
+    master)
+        local level="$(amixer sget Master | awk -F"[][]" '/dB/ { print ($2+0) }')"
+	local muted="$(amixer sget Master | awk -F"[][]" '/dB/ { print ($6) }' | sed 's/off/true/')"
+        ;;
+    mpv)
+        local level="$(send_command "get_property" "volume" | $cmd_jq -rM '.data')"
+        local muted="$(send_command "get_property" "mute" | $cmd_jq -rM '.data')"
+        ;;
+    *) return;;
+    esac
+
+    echo $muted > /tmp/tttt
+
+    local marks="$((($level + 5) / 10))"
+    [ "$marks" -gt 10 ] && marks=10
+
+    local output="$1"
+    if [ "$muted" = "true" ]; then
+        local output="$output (muted)"
+    fi
+    local output="$output: [$([ "$marks" -gt 0 ] && printf "%-$((marks))s" "+" | sed 's/\ /+/g')"
+    local output="$output$([ "$marks" -lt 10 ] && printf "%-$((10-marks))s" " ")]"
+    local output="$output$(printf " %3d" "$level")%"
+    ztatus-notify "$output"
+}
+
+die() {
+    printf "Error: %s\n" "$@"
+    exit 1
+}
+
+# check if prerequisites exist
+[ -z "$cmd_socat" ] && die "could not find 'socat'"
+[ -z "$cmd_jq" ] && die "could not find 'jq'"
+
+# check if daemonization should apply
+if [ "${0##*/}" = "mpvd" ]; then
+    if pidof -x "$(basename -- "$0")" -o $$ >/dev/null; then
+        die "Another instance of mpvd is already runnig..."
+    fi
+    [ -S "$mpvdsock" ] && rm "$mpvdsock"
+    while true; do
+        mpv --idle=yes \
+            --input-ipc-server="$mpvdsock" \
+	    --ytdl-format=best \
+	    --load-scripts=yes \
+        2>&1 >/tmp/mpvd.log
+    done
+    exit 0
+fi
+
+# check if socket exists
+[ ! -S "$mpvdsock" ] && die "socket: '$mpvdsock' is missing"
+
+# print help if no argument was passed
+if [ $# -lt 1 ]; then
+    print_help
+    exit 0
+fi
+
+case "$1" in
+
+    # actions
+    load)
+        shift; send_command "loadfile" "$(get_path "$@")" ;;
+    append)
+        shift; send_command "loadfile" "$(get_path "$@")" "append" ;;
+    stop)
+        send_command "stop" ;;
+    toggle)
+        send_command "cycle" "pause" ;;
+    prev)
+        send_command "playlist-prev" ;;
+    next)
+        send_command "playlist-next" ;;
+    list)
+        send_command "get_property" "playlist" \
+        | $cmd_jq -rM '.data[]|(
+            if .current then
+                "\\e[1;37mcurrent\\e[0m\\t"
+            else
+                "\\t" end
+        )+.filename' \
+        | sed -e "s/\\\\t/\\t/g" -e "s/\\\\e/`printf "\033"`/g";;
+    seek)
+        shift; send_command "seek" "$@" ;;
+    mute)
+        send_command "cycle" "mute"; notify_vol mpv;;
+    raise)
+        send_command "add" "volume" "10"; notify_vol mpv;;
+    lower)
+        send_command "add" "volume" "-10"; notify_vol mpv;;
+
+    # extra
+    ytdl-format)
+        shift; send_command "set" "ytdl-format" "$@" ;;
+
+    # alsa
+    amute)
+        amixer set Master toggle; notify_vol master;;
+    araise)
+        amixer -q sset Master 5%+; notify_vol master;;
+    alower)
+        amixer -q sset Master 5%-; notify_vol master;;
+
+    # default behaviour
+    help)
+        print_help ;;
+    *)
+        echo "Unknown option: $*"; print_help ;;
+esac

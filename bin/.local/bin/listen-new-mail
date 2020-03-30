@@ -8,5 +8,4 @@ while true; do
 		2>/dev/null | entr -n -r -a -d -p 2>/dev/null echo
 	count="$(find "$HOME"/mail/webmail-*/INBOX/new/* 2>/dev/null | wc -l)"
 	[ "$count" != "0" ] && ztatus-notify "you have $count new mail(s)"
-	ztatusc update mail
 done

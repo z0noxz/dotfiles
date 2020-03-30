@@ -4,5 +4,4 @@
 ls /var/db/xbps/pkgdb*.plist | entr -n -p -s '
 	count="$(pkg queue | wc -l)"
 	[ "$count" != "0" ] && ztatus-notify "you have $count new pakage(s)"
-	ztatusc update updates
 '

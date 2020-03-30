@@ -1,8 +1,0 @@
-#!/bin/sh
-
-STATUS_FILE="/tmp/.ac_status"
-
-[ ! -f "$STATUS_FILE" ] && touch "$STATUS_FILE"
-
-# Listen for changes forever
-echo "$STATUS_FILE" | entr -n -p 2>/dev/null ztatusc update power

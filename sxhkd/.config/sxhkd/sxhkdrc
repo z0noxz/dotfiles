@@ -1,157 +1,159 @@
 # --- dwm ---------------------------------------------------------------------
 # :restart dwm
 super + shift + r
-    echo quit > /tmp/dwm.fifo
+	echo quit > /tmp/dwm.fifo
 # :toggle between layouts
 super + space
-    echo toggle layout > /tmp/dwm.fifo
+	echo toggle layout > /tmp/dwm.fifo
 # :toggle fullscreen/monocle
 super + f
-    echo toggle monocle > /tmp/dwm.fifo
+	echo toggle monocle > /tmp/dwm.fifo
 # :toggle floating client
 super + shift + space
-    echo toggle floating > /tmp/dwm.fifo
+	echo toggle floating > /tmp/dwm.fifo
 # :toggle sticky client
 super + s
-    echo toggle sticky > /tmp/dwm.fifo
+	echo toggle sticky > /tmp/dwm.fifo
 # :toggle bar visibillity
 super + b
-    echo toggle bar > /tmp/dwm.fifo
+	echo toggle bar > /tmp/dwm.fifo
 # :change client focus in stack
 super + {j,k}
-    echo focus stack {+,-} > /tmp/dwm.fifo
+	echo focus stack {+,-} > /tmp/dwm.fifo
 # :move client in stack
 super + shift + {j,k}
-    echo move stack {+,-} > /tmp/dwm.fifo
+	echo move stack {+,-} > /tmp/dwm.fifo
 # :increase/decrease  change mfact
 super + {h,l}
-    echo set mfact {+,-} > /tmp/dwm.fifo
+	echo set mfact {+,-} > /tmp/dwm.fifo
 # :rotate stack
 super + shift + {h,l}
-    echo rotate stack {+,-} > /tmp/dwm.fifo
+	echo rotate stack {+,-} > /tmp/dwm.fifo
 # :increase/decrease nmaster
 super + {equal,minus}
-    echo inc nmaster {+,-} > /tmp/dwm.fifo
+	echo inc nmaster {+,-} > /tmp/dwm.fifo
 # :rotate through latouts
 super + {_,shift} z
-    echo rotate layout {+,-} > /tmp/dwm.fifo
+	echo rotate layout {+,-} > /tmp/dwm.fifo
 # :toggle between views
 super + Tab
-    echo view > /tmp/dwm.fifo
+	echo view > /tmp/dwm.fifo
 # :change monitor focus
 super + {comma,period}
-    echo focus mon {+,-} > /tmp/dwm.fifo
+	echo focus mon {+,-} > /tmp/dwm.fifo
 # :move client to monitor
 super + shift + {comma,period}
-    echo tag mon {+,-} > /tmp/dwm.fifo
+	echo tag mon {+,-} > /tmp/dwm.fifo
 # :show all tags
 super + 0
-    echo view all > /tmp/dwm.fifo
+	echo view all > /tmp/dwm.fifo
 # :show client on all tags
 super + shift 0
-    echo tag all > /tmp/dwm.fifo
+	echo tag all > /tmp/dwm.fifo
 # :show view
 super + {1-9}
-    echo view {0-8} > /tmp/dwm.fifo
+	echo view {0-8} > /tmp/dwm.fifo
 # :toggle view
 super + control + {1-9}
-    echo toggle view {0-8} > /tmp/dwm.fifo
+	echo toggle view {0-8} > /tmp/dwm.fifo
 # :send client to view
 super + shift + {1-9}
-    echo tag {0-8} > /tmp/dwm.fifo
+	echo tag {0-8} > /tmp/dwm.fifo
 # :toggle client on view
 super + control + shift + {1-9}
-    echo toggle tag {0-8} > /tmp/dwm.fifo
+	echo toggle tag {0-8} > /tmp/dwm.fifo
 # :spawn terminal (with tmux)
 super + Return
-    echo spawn $HOME/.local/bin/tmux-term > /tmp/dwm.fifo
+	echo spawn $HOME/.local/bin/tmux-term > /tmp/dwm.fifo
 # :spawn terminal
 super + shift + Return
-    echo spawn $TERMINAL > /tmp/dwm.fifo
+	echo spawn $TERMINAL > /tmp/dwm.fifo
 
 # --- browsers ----------------------------------------------------------------
 # :vimb tabbed
 super + shift + w
-    ~/.local/bin/alias/vimb-tabbed
+	~/.local/bin/alias/vimb-tabbed
 
 # --- dmenus ------------------------------------------------------------------
 # :run menu
 super + o
-    dmenu_run
+	dmenu_run
 # :main menu
 super + p
-    dmenu_main
+	dmenu_main
 # :layouts menu
 super + grave
-    dmenu_layouts
+	dmenu_layouts
 # :mount menu
 super + m
-    dmenu_mount
+	dmenu_mount
 # :umount menu
 super + shift + m
-    dmenu_umount
+	dmenu_umount
 # :themes menu
 super + shift + t
-    dmenu_themes
+	dmenu_themes
 # :kill menu
 super + q
-    dmenu_confirm "Are you sure you want to close this client?" \
-    -w $(xdo id)                                                \
-    && xdo kill
+	dmenu_confirm "Are you sure you want to close this client?" \
+	-w $(xdo id)                                                \
+	&& xdo kill
 # :YouTube search menu
 super + y
-    dmenu_yt_search
+	dmenu_yt_search
 # :power menu
 super + F4
-    dmenu_power
+	dmenu_power
 
 # --- operations --------------------------------------------------------------
 # :sync email
 super + shift + e
-    operations sync-mail
+	operations sync-mail
 
 # --- mpv controler -----------------------------------------------------------
 # :mute volume
 super + XF86AudioMute
-    mpvc mute
+	mpvc mute
 # :lower volume
 super + XF86AudioLowerVolume
-    mpvc lower
+	mpvc lower
 # :raise volume
 super + XF86AudioRaiseVolume
-    mpvc raise
+	mpvc raise
 # :mute alsa volume
 super + shift + XF86AudioMute
-    mpvc amute
+	mpvc amute
 # :lower alsa volume
 super + shift + XF86AudioLowerVolume
-    mpvc alower
+	mpvc alower
 # :raise alsa volume
 super + shift + XF86AudioRaiseVolume
-    mpvc araise
+	mpvc araise
 # :toggle play/pause playback
 super + XF86AudioPlay
-    mpvc toggle
+	mpvc toggle
 # :stop playback
 super + shift + XF86AudioPlay
-    mpvc stop
+	mpvc stop
 # :seek 5 seconds backwards
 super + XF86AudioRewind
-    mpvc seek -5
+	mpvc seek -5
 # :seek 5 seconds forward
 super + XF86AudioForward
-    mpvc seek 5
+	mpvc seek 5
 # :goto previous track
 super + XF86AudioPrev
-    mpvc prev
+	mpvc prev
 # :goto next track
 super + XF86AudioNext
-    mpvc next
+	mpvc next
 
 # --- misc --------------------------------------------------------------------
 # :record screen region
 shift + Print
-    screenrec
+	screenrec
 # :print screen region
 Print
-    screenshot
+	screenshot
+super + F5
+	printf "#%02x%02x%02x" $(stint) | xclip

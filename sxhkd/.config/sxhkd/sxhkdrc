@@ -106,9 +106,6 @@ super + F4
     dmenu_power
 
 # --- operations --------------------------------------------------------------
-# :toggle date time visibillity
-super + t
-    operations ztatus show-time
 # :sync email
 super + shift + e
     operations sync-mail
@@ -150,14 +147,6 @@ super + XF86AudioPrev
 # :goto next track
 super + XF86AudioNext
     mpvc next
-
-# --- ztatus ------------------------------------------------------------------
-# :toggle volume
-super + apostrophe; 1
-    echo toggle volume > /tmp/ztatus.fifo
-# :toggle power
-super + apostrophe; 2
-    echo toggle power > /tmp/ztatus.fifo
 
 # --- misc --------------------------------------------------------------------
 # :record screen region

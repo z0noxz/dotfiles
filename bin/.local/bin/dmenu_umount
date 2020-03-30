@@ -34,4 +34,4 @@ part="$(                                        \
 )"
 [ "$part" = "" ] && exit
 
-sudo umount $part && ztatusc notify "'$part' unmounted"
+sudo umount $part && ztatus-notify "'$part' unmounted"

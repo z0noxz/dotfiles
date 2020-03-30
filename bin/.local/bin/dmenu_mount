@@ -44,4 +44,4 @@ mntpnt="$(
 [ "$mntpnt" = "" ] || [ ! -d "$mntpnt" ] && exit 1
 
 # finally mount the partition
-sudo mount $part $mntpnt && ztatusc notify "'$part' mounted at '$mntpnt'"
+sudo mount $part $mntpnt && ztatus-notify "'$part' mounted at '$mntpnt'"

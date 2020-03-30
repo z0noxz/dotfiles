@@ -94,7 +94,7 @@ function notify_current_track()
         ))
     end
 
-    os.execute(("ztatusc notify %s"):format(body))
+	os.execute(("printf %s > /tmp/ztatus.fifo"):format(body))
 end
 
 function notify_metadata_updated(name, value)

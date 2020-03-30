@@ -1,0 +1,4 @@
+#!/bin/sh
+
+fifo="/tmp/ztatus.fifo"
+printf '%s' "$*" > "$fifo"

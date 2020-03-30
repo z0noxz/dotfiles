@@ -9,7 +9,6 @@ case "$option" in
 list)
 	echo notify
 	echo sync-mail
-	echo ztatus
 ;;
 notify)
 	text="$(
@@ -18,28 +17,10 @@ notify)
 		|| echo "$2"
 	)"
 	if [ "$text" != "" ]; then
-		ztatusc notify "$text"
+		ztatus-notify "$text"
 	else
 		operations dmenu ${args}
 	fi
-;;
-ztatus)
-	case "$2" in
-	list)
-		echo show-time
-	;;
-	show-time)
-		ztatusc toggle datetime
-	;;
-	dmenu|"")
-		option="$(operations ztatus list | dmenu_vtc${args} -p ztatus:)"
-		if [ "$option" != "" ]; then
-			operations ztatus "$option"
-		else
-			operations dmenu "${args}"
-		fi
-	;;
-	esac
 ;;
 sync-mail)
 	"$HOME"/.local/bin/mbsync-stdin < "$XDG_CONFIG_HOME"/mbsync/template -a -V

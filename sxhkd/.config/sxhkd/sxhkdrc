@@ -77,7 +77,7 @@ super + shift + w
 # --- dmenus ------------------------------------------------------------------
 # :run menu
 super + o
-	dmenu_run
+	$HOME/.local/bin/dmenu_run
 # :main menu
 super + p
 	dmenu_main
@@ -155,5 +155,9 @@ shift + Print
 # :print screen region
 Print
 	screenshot
+# :grab pixel color
 super + F5
 	printf "#%02x%02x%02x" $(stint) | xclip
+# :restart sxhkd
+super + F10
+	killall -SIGUSR1 sxhkd

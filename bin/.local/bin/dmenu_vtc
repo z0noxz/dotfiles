@@ -20,6 +20,10 @@ NFCOLOR="$(readvtc 6)"
 NBCOLOR="$([ "$LUMI" -gt 50 ] && printf '#fdfdfd' || printf '#030303')"
 SFCOLOR="$(readvtc 6)"
 SBCOLOR="$(readvtc 5)"
+NHFCOLOR="$(readvtc 3)"
+NHBCOLOR="$([ "$LUMI" -gt 50 ] && printf '#fdfdfd' || printf '#030303')"
+SHFCOLOR="$(readvtc 3)"
+SHBCOLOR="$(readvtc 5)"
 WINDOW=""
 
 print_usage() {
@@ -50,6 +54,10 @@ handle_value() {
 	-nb)    NBCOLOR="$1";;
 	-sf)    SFCOLOR="$1";;
 	-sb)    SBCOLOR="$1";;
+	-nhf)   NHFCOLOR="$1";;
+	-nhb)   NHBCOLOR="$1";;
+	-shf)   SHFCOLOR="$1";;
+	-shb)   SHBCOLOR="$1";;
 	-w)     WINDOW="$1";;
 	--)     break;;
 	-*)     echo "invalid option: $ARGNAME" 1>&2; exit 1;;
@@ -87,6 +95,10 @@ case $INX in
 	-nb     "$NBCOLOR"                                                      \
 	-sf     "$SFCOLOR"                                                      \
 	-sb     "$SBCOLOR"                                                      \
+	-nhf    "$NHFCOLOR"                                                     \
+	-nhb    "$NHBCOLOR"                                                     \
+	-shf    "$SHFCOLOR"                                                     \
+	-shb    "$SHBCOLOR"                                                     \
 	-w      "$WINDOW"
 ;;
 0)

@@ -15,6 +15,7 @@ set send_charset            = "us-ascii:utf-8"
 # Bindings
 bind index                  j next-entry
 bind index                  k previous-entry
+bind index                  >r group-reply
 bind attach,index,pager     \ej next-page
 bind attach,index,pager     \ek previous-page
 bind pager                  g noop

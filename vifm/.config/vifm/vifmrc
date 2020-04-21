@@ -151,3 +151,5 @@ command! fzffind
     \ | redraw
 nnoremap <c-f> :fzffind<cr>
 
+" icons
+set classify='» :dir:/'

@@ -1,0 +1,3 @@
+#!/bin/sh
+
+/bin/proxychains4 -q /bin/trans -b -p "$@"

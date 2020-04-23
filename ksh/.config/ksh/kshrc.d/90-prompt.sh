@@ -20,7 +20,7 @@ _ksh_user_prompt() {
 _ksh_git_prompt() {
 
     # abort if not a git repository
-    [ ! -d .git ] && return
+    [ ! -f .git ] && [ ! -d .git ] && return
 
     # variable
     local branch=""

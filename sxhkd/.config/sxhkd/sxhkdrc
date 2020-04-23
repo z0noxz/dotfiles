@@ -148,6 +148,11 @@ super + XF86AudioPrev
 super + XF86AudioNext
 	mpvc next
 
+# --- synaptic ----------------------------------------------------------------
+# :toggle touchpad
+XF86TouchpadToggle
+	synclient TouchpadOff="$(synclient -l | grep -c 'TouchpadOff.*=.*0')"
+
 # --- misc --------------------------------------------------------------------
 # :record screen region
 shift + Print

@@ -3,8 +3,8 @@
 export PS1="$(printf '[xxx]%s\[%s\]%s\[%s\] \\w%s \$ '                      \
 	'$(_ksh_set_title)'                                                     \
 	'$(tput bold)'                                                          \
-	'$(tput sgr0)'                                                          \
 	'$(_ksh_user_prompt)'                                                   \
+	'$(tput sgr0)'                                                          \
 	'$(_ksh_git_prompt)'                                                    \
 )"
 

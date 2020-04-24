@@ -48,7 +48,7 @@ dwm)
 
 	# start daemons
 	[ ! $(pidof -x monitor-daemon)  ] && "$HOME"/.local/bin/monitor daemon &
-	[ ! $(pidof -x mpvd)            ] && "$HOME"./local/bin/mpvd &
+	[ ! $(pidof -x mpvd)            ] && "$HOME"/.local/bin/mpvd &
 
 	# start prerequisites
 	[ ! $(pidof -x listen-new-mail) ] && "$HOME/.local/bin/listen-new-mail" &

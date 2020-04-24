@@ -10,8 +10,12 @@ mem)
 battery)
 	_PATH="/sys/class/power_supply/BAT0"
 	_STATUS="$(cat "$_PATH/status")"
-	_FULL="$(cat "$_PATH/energy_full")"
-	_NOW="$(cat "$_PATH/energy_now")"
+	_FULL="$([ -f "$_PATH/charge_full" ]                                    \
+		&& cat "$_PATH/charge_full"                                         \
+		|| cat "$_PATH/energy_full")"
+	_NOW="$([ -f "$_PATH/charge_now" ]                                      \
+		&& cat "$_PATH/charge_now"                                          \
+		|| cat "$_PATH/energy_now")"
 
 	[ "$_STATUS" = "Discharging" ] && _STATUS="-" || _STATUS="+"
 	echo "$_STATUS$((100 * _NOW / _FULL))%"

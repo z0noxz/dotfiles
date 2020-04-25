@@ -27,6 +27,7 @@ export INPUTRC="$XDG_CONFIG_HOME/readline/inputrc"
 export LESSHISTFILE=-
 export LESSKEY="$XDG_CONFIG_HOME/less/lesskey"
 export MYSQL_HISTFILE="$XDG_DATA_HOME/mysql_history"
+export NUGET_PACKAGES="$XDG_CACHE_HOME/NuGetPackages"
 export OCTAVE_HISTFILE="$XDG_CACHE_HOME/octave-hsts"
 export OCTAVE_SITE_INITFILE="$XDG_CONFIG_HOME/octave/octaverc"
 export PASSWORD_STORE_DIR="$XDG_DATA_HOME/pass"

@@ -1,0 +1,2 @@
+"query:LBRY.tv Subscriptions:link =~ \"^https://api.lbry.tv\""
+"query:YouTube Subscriptions:link =~ \"^https://www.youtube.com\""

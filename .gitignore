@@ -4,7 +4,6 @@ calcurse/.config/calcurse/todo
 calcurse/.config/calcurse/notes
 freecad/.config/FreeCAD/FreeCAD.conf
 gtk/.config/gtk-2.0/gtkfilechooser.ini
-newsboat/.config/newsboat/urls
 vim/.config/vim/spell
 vifm/.config/vifm/vifminfo
 vimb/.config/vimb/*

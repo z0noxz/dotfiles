@@ -1,6 +1,12 @@
-# https://github.com/newsboat/newsboat/blob/master/src/configcontainer.cpp
+urls-source "ocnews"
+ocnews-url "https://next.noxz.tech"
+ocnews-login "z0noxz"
+ocnews-passwordeval "pass nextcloud/z0noxz"
+
 browser                     "dmenu_url_open"
 cache-file                  ".cache/newsboat/cache.db"
+auto-reload                 yes
+prepopulate-query-feeds     yes
 history-limit               0
 datetime-format             "%Y-%m-%d %H:%M"
 articlelist-format          " %4i  %D %?T? %-20T ? %t"

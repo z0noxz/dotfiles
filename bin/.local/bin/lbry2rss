@@ -14,7 +14,7 @@ CHNL_REQ="{
 		\"urls\":[\"$CHNL\"]
 	}
 }"
-CHNL_QRY=".result | to_entries[].value | .value.title,.name,.value.description"
+CHNL_QRY=".result | to_entries[].value | .value.title,.short_url,.value.description"
 LIST_REQ="{
 	\"jsonrpc\":\"2.0\",
 	\"method\":\"claim_search\",
@@ -45,7 +45,7 @@ CHNL_DATA="$(curl \
 	-e 's/^"//' \
 	-e 's/"$//' \
 | awk '
-	NR == 1 {print "<title>"$0"</title>"}
+	NR == 1 {gsub(/&/, "&amp;"); print "<title>"$0"</title>"}
 	NR == 2 {print "<link>"$0"</link>"}
 	NR == 3 {print "<description><![CDATA["$0"]]></description>"}
 '
@@ -61,7 +61,7 @@ LIST_DATA="$(curl \
 	-e 's/"$//' \
 | awk '
 	NR % 5 == 1 {print "<item>"}
-	NR % 5 == 1 {print "\t<title>"$0"</title>"}
+	NR % 5 == 1 {gsub(/&/, "&amp;"); print "\t<title>"$0"</title>"}
 	NR % 5 == 2 {gsub(/\\n/, "</p><p>"); print "\t<description><![CDATA[<p>"$0"</p>]]></description>"}
 	NR % 5 == 3 {print "\t<link>"$0"</link>"}
 	NR % 5 == 4 {print "\t<guid isPermaLink=\"false\">"$0"</guid>"}

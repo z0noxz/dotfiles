@@ -21,7 +21,7 @@ LIST_REQ="{
 	\"params\":{
 		\"channel\":\"$CHNL\",
 		\"order_by\":[\"release_time\"],
-		\"page\":1,
+		\"page\":${LBRY2RSS_PAGE:-1},
 		\"page_size\":50
 	}
 }"

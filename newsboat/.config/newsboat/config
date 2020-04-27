@@ -6,6 +6,7 @@ ocnews-passwordeval "pass nextcloud/z0noxz"
 browser                     "dmenu_url_open"
 cache-file                  ".cache/newsboat/cache.db"
 auto-reload                 yes
+reload-time                 15
 prepopulate-query-feeds     yes
 history-limit               0
 datetime-format             "%Y-%m-%d %H:%M"

@@ -6,6 +6,9 @@ test -z "$XDG_CONFIG_DIRS" && export XDG_CONFIG_DIRS="/etc/xdg"
 test -z "$XDG_CACHE_HOME" && export XDG_CACHE_HOME="$HOME/.cache"
 test -z "$XDG_RUNTIME_DIR" && export XDG_RUNTIME_DIR="/tmp/$(id -u)-runtime-dir"
 
+# this is a window manager, not a desktop environment
+export XDG_DESKTOP_DIR="$HOME"
+
 # create XDG_RUNTIME_DIR if non-existent
 if ! test -d "${XDG_RUNTIME_DIR}"; then
 	mkdir "${XDG_RUNTIME_DIR}"

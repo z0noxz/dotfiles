@@ -7,75 +7,97 @@
 
 CHNL="$1"
 
-CHNL_REQ="{
-	\"jsonrpc\":\"2.0\",
-	\"method\":\"resolve\",
-	\"params\":{
-		\"urls\":[\"$CHNL\"]
-	}
-}"
-CHNL_QRY=".result | to_entries[].value | .value.title,.short_url,.value.description"
-LIST_REQ="{
-	\"jsonrpc\":\"2.0\",
-	\"method\":\"claim_search\",
-	\"params\":{
-		\"channel\":\"$CHNL\",
-		\"order_by\":[\"release_time\"],
-		\"page\":${LBRY2RSS_PAGE:-1},
-		\"page_size\":50
-	}
-}"
-LIST_QRY=".result.items[] |
-.value.title,
-.value.description,
-\"https://api.lbry.tv/content/claims/\"
-	+.normalized_name+\"/\"
-	+.claim_id
-	+\"/stream\",
-.permanent_url,
-.meta.creation_timestamp
-"
+get_channel_data() {
+	local CHNL_REQ="{
+		\"jsonrpc\":\"2.0\",
+		\"method\":\"resolve\",
+		\"params\":{
+			\"urls\":[\"$CHNL\"]
+		}
+	}"
+	local CHNL_QRY=".result | to_entries[].value |
+	.value.title,
+	.short_url,
+	.value.description
+	"
+	local CHNL_DATA="$(curl \
+		--data-binary "$CHNL_REQ" \
+		-H 'content-type:text/plain;' \
+		--silent https://api.lbry.tv/api/v1/proxy \
+	| jq "$CHNL_QRY" \
+	| sed \
+		-e 's/^"//' \
+		-e 's/"$//' \
+	| awk '
+		NR == 1 {gsub(/&/, "&amp;"); print "<title>"$0"</title>"}
+		NR == 2 {print "<link>"$0"</link>"}
+		NR == 3 {print "<description><![CDATA["$0"]]></description>"}
+	'
+	)"
 
-CHNL_DATA="$(curl \
-	--data-binary "$CHNL_REQ" \
-	-H 'content-type:text/plain;' \
-	--silent https://api.lbry.tv/api/v1/proxy \
-| jq "$CHNL_QRY" \
-| sed \
-	-e 's/^"//' \
-	-e 's/"$//' \
-| awk '
-	NR == 1 {gsub(/&/, "&amp;"); print "<title>"$0"</title>"}
-	NR == 2 {print "<link>"$0"</link>"}
-	NR == 3 {print "<description><![CDATA["$0"]]></description>"}
-'
-)"
+	echo "$CHNL_DATA"
+}
 
-LIST_DATA="$(curl \
-	--data-binary "$LIST_REQ" \
-	-H 'content-type:text/plain;' \
-	--silent https://api.lbry.tv/api/v1/proxy \
-| jq "$LIST_QRY" \
-| sed \
-	-e 's/^"//' \
-	-e 's/"$//' \
-| awk '
-	NR % 5 == 1 {print "<item>"}
-	NR % 5 == 1 {gsub(/&/, "&amp;"); print "\t<title>"$0"</title>"}
-	NR % 5 == 2 {gsub(/\\n/, "</p><p>"); print "\t<description><![CDATA[<p>"$0"</p>]]></description>"}
-	NR % 5 == 3 {print "\t<link>"$0"</link>"}
-	NR % 5 == 4 {print "\t<guid isPermaLink=\"false\">"$0"</guid>"}
-	NR % 5 == 0 {print "\t<pubDate>"strftime("%a, %d %b %Y %T %z",$0)"</pubDate>"}
-	NR % 5 == 0 {print "</item>"}
-' \
-| sed 's:<p></p>::g'
-)"
+get_feed_items() {
+	local LIST_REQ="{
+		\"jsonrpc\":\"2.0\",
+		\"method\":\"claim_search\",
+		\"params\":{
+			\"channel\":\"$CHNL\",
+			\"order_by\":[\"release_time\"],
+			\"page\":$1,
+			\"page_size\":50
+		}
+	}"
+	local LIST_QRY=".result.items[] |
+	.value.title,
+	.value.thumbnail.url,
+	.value.description,
+	\"https://api.lbry.tv/content/claims/\"
+		+.normalized_name+\"/\"
+		+.claim_id
+		+\"/stream\",
+	.permanent_url,
+	.meta.creation_timestamp
+	"
+	local LIST_DATA="$(curl \
+		--data-binary "$LIST_REQ" \
+		-H 'content-type:text/plain;' \
+		--silent https://api.lbry.tv/api/v1/proxy \
+	| jq "$LIST_QRY" \
+	| sed \
+		-e 's/^"//' \
+		-e 's/"$//' \
+	| awk '
+		NR % 6 == 1 {print "<item>"}
+		NR % 6 == 1 {gsub(/&/, "&amp;"); print "\t<title>"$0"</title>"}
+		NR % 6 == 2 {print "\t<description><![CDATA[<img src=\""$0"\" width=\"480\" height=\"360\" />"}
+		NR % 6 == 3 {gsub(/\\n/, "</p><p>"); print "<p>"$0"</p>]]></description>"}
+		NR % 6 == 4 {print "\t<link>"$0"</link>"}
+		NR % 6 == 5 {print "\t<guid isPermaLink=\"false\">"$0"</guid>"}
+		NR % 6 == 0 {print "\t<pubDate>"strftime("%a, %d %b %Y %T %z",$0)"</pubDate>"}
+		NR % 6 == 0 {print "</item>"}
+	' \
+	| sed 's:<p></p>::g'
+	)"
+
+	echo "$LIST_DATA"
+}
+
 
 echo '<?xml version="1.0" encoding="UTF-8" ?>
 <rss version="2.0">
 <channel>'
-echo "$CHNL_DATA"
-echo "$LIST_DATA"
-echo '
-</channel>
+get_channel_data
+i=1
+if [ "$LBRY2RSSFULL" = "true" ]; then
+	while :; do
+		data="$(get_feed_items $i)"
+		i=$((i+1))
+		[ "$data" = "" ] && break || echo "$data"
+	done
+else
+	get_feed_items 1
+fi
+echo '</channel>
 </rss>'

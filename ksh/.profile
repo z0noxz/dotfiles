@@ -7,7 +7,7 @@ test -z "$XDG_CACHE_HOME" && export XDG_CACHE_HOME="$HOME/.cache"
 test -z "$XDG_RUNTIME_DIR" && export XDG_RUNTIME_DIR="/tmp/$(id -u)-runtime-dir"
 
 # this is a window manager, not a desktop environment
-export XDG_DESKTOP_DIR="$HOME"
+export XDG_DESKTOP_DIR="$HOME/"
 
 # create XDG_RUNTIME_DIR if non-existent
 if ! test -d "${XDG_RUNTIME_DIR}"; then

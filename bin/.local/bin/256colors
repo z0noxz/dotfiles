@@ -1,0 +1,32 @@
+#!/bin/sh
+
+# for (i = (-1+1); i <= 255; i+=1)
+i=-1; while [ $((i+=1)) -le 255 ]; do
+	[                                                                       \
+		$i -lt 16 -a $(( i % 8 )) -ne 0 -o                                  \
+		$i -gt 231 -a $(( i % 8 )) -ne 0 -o                                 \
+		$i -ge 16 -a $i -le 231 -a $(( (i - 16) % 6 )) -ne 0                \
+	] && printf '  '
+
+	[                                                                       \
+		$i -gt 0 -a $i -le 16 -a $(( i % 8 )) -eq 0 -o                      \
+		$i -gt 231 -a $(( i % 8 )) -eq 0 -o                                 \
+		$i -ge 16 -a $i -le 231 -a $(( (i - 16) % 6 )) -eq 0                \
+	] && printf '\n'
+
+	[                                                                       \
+		$i -ge 16 -a $i -le 232 -a $(( (i - 16) % 36 )) -eq 0               \
+	] && printf '\n'
+
+	tput setab $i;
+	[                                                                       \
+		$i -le 16 -a $(( i % 8 )) -lt 2 -o                                  \
+		$i -gt 231 -a $i -lt 244 -o                                         \
+		$i -gt 16 -a $i -lt 232 -a                                          \
+		$(( (i - 16) % 36 )) -lt 18                                         \
+	] && tput setaf 15 || tput setaf 16
+	printf ' %03d ' $i
+
+	tput op
+done
+printf '\n'

@@ -1,0 +1,7 @@
+#!/bin/sh
+
+find ~/.source                                                              \
+	-name .git                                                              \
+	-printf "$(tput setaf 202)>> %P\n$(tput setaf 33)"                      \
+	-execdir git fetch --dry-run \;                                         \
+	-printf "$(tput op)"

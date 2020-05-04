@@ -35,7 +35,10 @@ if empty("$XDG_DATA_HOME")
 	let $XDG_DATA_HOME="$HOME/.local/share"
 endif
 
-autocmd FileReadPre * :silent !mkdir -p $XDG_CACHE_HOME/vim/{swap,backup,undo}
+autocmd BufNewFile,BufReadPre,FileReadPre * :silent !mkdir -p
+	\ $XDG_CACHE_HOME/vim/swap
+	\ $XDG_CACHE_HOME/vim/backup
+	\ $XDG_CACHE_HOME/vim/undo
 set directory=$XDG_CACHE_HOME/vim/swap,~/,/tmp
 set backupdir=$XDG_CACHE_HOME/vim/backup,~/,/tmp
 set undodir=$XDG_CACHE_HOME/vim/undo,~/,/tmp

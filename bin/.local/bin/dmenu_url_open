@@ -20,7 +20,8 @@ args=" $@ -i -p $visual"
 
 case "$url" in
 *//api.lbry.tv*)
-	url="$(echo "$url" | sed "s/api.lbry.tv/player$((RANDOM%5+1)).lbry.tv/")";;
+	url="$(echo "$url"                                                      \
+	| sed "s/api.lbry.tv/player$((RANDOM%6+1)).lbryplayer.xyz/")";;
 esac
 
 case "$(printf "$options"                                                   \

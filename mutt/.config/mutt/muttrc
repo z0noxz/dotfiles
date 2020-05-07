@@ -54,7 +54,7 @@ bind index,pager            B sidebar-toggle-visible
 set date_format             = "%Y-%m-%d %H:%M:%S"
 set index_format            = "%3C [ %Z ]  %D  %-20.20F  %s (%-4.4c)"
 set sort                    = "threads"
-set sort_aux                = "reverse-date"
+set sort_aux                = "reverse-last-date-received"
 
 # Hide help
 set help                    = "yes"

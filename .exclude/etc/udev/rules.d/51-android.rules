@@ -1,0 +1,2 @@
+# give plugdev permission to android devices
+SUBSYSTEM=="usb", ATTR{idVendor}=="05c6", MODE="0666", GROUP="plugdev"

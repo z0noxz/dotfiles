@@ -1,0 +1,3 @@
+#!/bin/sh
+
+/bin/nyx --config "$XDG_CONFIG_HOME/nyx/nyxrc" "$@"

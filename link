@@ -4,7 +4,7 @@
 [ "$1" = "" ] && printf '\nmodules:\n'
 
 self="$(realpath $0 --relative-to="$HOME")"
-selfpath="${self%%/*}"
+selfpath="${self%/*}"
 
 apply_action() {
     local readonly dir="$1"

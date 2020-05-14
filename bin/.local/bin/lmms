@@ -1,0 +1,3 @@
+#!/bin/sh
+
+/usr/local/bin/lmms --config "$XDG_CONFIG_HOME/lmms/lmmsrc.xml" "$@"

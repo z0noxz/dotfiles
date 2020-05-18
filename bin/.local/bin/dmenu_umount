@@ -18,10 +18,10 @@ exclude="$(
 
 # get mounted partitions
 parts="$(                                       \
-	lsblk -lp                                   \
-	| grep "part /"                             \
+	lsblk -sdn -o PATH,SIZE,TYPE,MOUNTPOINT     \
+	| grep 'part[ ]*/'                          \
 	| grep -v "$exclude"                        \
-	| awk '{print $1, "(" $4 ")", "on", $7}'    \
+	| awk '{print $1, "[" $2 "]", "on", $4}'    \
 )"
 [ "$parts" = "" ] && exit
 

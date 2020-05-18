@@ -2,18 +2,18 @@
 
 # get mountable partitions
 parts="$(
-	lsblk -lp                           \
-	| grep "[0-9] part $"               \
-	| awk '{print $1, "(" $4 ")"}'      \
+	lsblk -sdn -o PATH,SIZE,TYPE,MOUNTPOINT \
+	| grep 'part[ ]*$'                      \
+	| awk '{print $1, "[" $2 "]"}'          \
 )"
 [ "$parts" = "" ] && exit 1
 
 # choose a partition to mount
 args=" -i -p partition:"
 part="$(
-	echo "$parts"                       \
-	| dmenu_vtc${args}                  \
-	| awk '{print $1}'                  \
+	echo "$parts"                           \
+	| dmenu_vtc${args}                      \
+	| awk '{print $1}'                      \
 )"
 [ "$part" = "" ] && exit 1
 
@@ -22,24 +22,24 @@ sudo mount "$part" 2>/dev/null && exit 0
 
 # get available mount points
 dirs="$(
-	find                                \
-		/mnt                            \
-		/media                          \
-		/mount                          \
-		~/mnt                           \
-		~/media                         \
-		~/mount                         \
-	-maxdepth 2                         \
-	-type d                             \
-	-empty                              \
-	2>/dev/null                         \
+	find                                    \
+		/mnt                                \
+		/media                              \
+		/mount                              \
+		~/mnt                               \
+		~/media                             \
+		~/mount                             \
+	-maxdepth 2                             \
+	-type d                                 \
+	-empty                                  \
+	2>/dev/null                             \
 )"
 
 # choose a mount point
 args=" -i -p directory:"
 mntpnt="$(
-	echo "$dirs"                        \
-	| dmenu_vtc${args}                  \
+	echo "$dirs"                            \
+	| dmenu_vtc${args}                      \
 )"
 [ "$mntpnt" = "" ] || [ ! -d "$mntpnt" ] && exit 1
 

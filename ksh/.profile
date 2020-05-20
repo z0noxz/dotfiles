@@ -22,6 +22,8 @@ fi
 export PATH="$PATH:$HOME/.local/bin:/xtra/bin"
 
 # setup pseudo XDG support
+export ADB_VENDOR_KEY="$XDG_CONFIG_HOME/android"
+export ANDROID_SDK_HOME="$XDG_CONFIG_HOME/android"
 export DIALOGRC="$XDG_CONFIG_HOME/dialog/dialogrc"
 export DVDCSS_CACHE="$XDG_DATA_HOME/dvdcss"
 export GNUPGHOME="$XDG_DATA_HOME/gnupg"

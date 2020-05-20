@@ -162,7 +162,7 @@ Print
 	screenshot
 # :grab pixel color
 super + F5
-	printf "#%02x%02x%02x" $(stint) | xclip
+	printf "#%02x%02x%02x" $(stint) | xclip -sel clip -f | xclip
 # :restart sxhkd
 super + F10
 	killall -SIGUSR1 sxhkd

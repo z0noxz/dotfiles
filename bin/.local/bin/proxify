@@ -49,6 +49,8 @@ start_proxy() {
 	# # proxychains4 -q -f /etc/proxychains.noxz.conf ksh
 }
 
+# TODO :: check if proxy is up, before starting. And ask to restart
+
 case "$1" in
 	""|status) check_proxy ;;
 	start) kill_proxy; start_proxy;;

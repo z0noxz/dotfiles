@@ -5,11 +5,16 @@ if [ $# -ne 1 ] ; then
 	exit 1
 fi
 
-_KEYFILE="$1"
-_PASS="$(cat - | sed -e "s|\"|\\\"|g")"
+PASS="$(cat - | sed -e "s|\"|\\\"|g")"
 
-expect -c "                         \
-	spawn ssh-add $_KEYFILE;        \
-	expect -re \".*passphrase.*\";  \
-	send -- \"$_PASS\r\";           \
-	expect eof"
+
+expect <<EOF
+spawn ssh-add "$1"
+expect {
+	-re ".*passphrase.*: $" {
+		send -- "$PASS\r"
+		exp_continue
+	}
+	eof
+}
+EOF

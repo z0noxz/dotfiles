@@ -3,6 +3,7 @@
 mpvdsock="/tmp/mpvd.sock"
 cmd_socat="$(command -v socat) - '$mpvdsock'"
 cmd_jq="$(command -v jq)"
+cmd_exif="$(command -v exiftool)"
 
 print_help() {
 	echo "Usage: mpvc ACTION [ARGS]\n"
@@ -85,6 +86,7 @@ die() {
 # check if prerequisites exist
 [ -z "$cmd_socat" ] && die "could not find 'socat'"
 [ -z "$cmd_jq" ] && die "could not find 'jq'"
+[ -z "$cmd_exif" ] && die "could not find 'exiftool'"
 
 # check if daemonization should apply
 if [ "${0##*/}" = "mpvd" ]; then
@@ -131,7 +133,7 @@ exif_extract() {
 }
 
 exif_wrapper() {
-	exif_data="$(exiftool -directory -filename -artist -title -duration "$@")"
+	exif_data="$($cmd_exif -directory -filename -artist -title -duration "$@")"
 	exif_directory="$(exif_extract "$exif_data" "Directory")"
 	exif_filename="$(exif_extract "$exif_data" "File Name")"
 	exif_artist="$(exif_extract "$exif_data" "Artist")"

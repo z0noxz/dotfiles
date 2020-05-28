@@ -171,7 +171,7 @@ case "$1" in
 		if [ -d "$playlist" ]; then
 			playlist_tmp="$(mktemp /tmp/pls.mpvc.XXXXXXXXXX)"
 			echo '#EXTM3U' > "$playlist_tmp"
-			find "$playlist" -maxdepth 2 -type f | while read -r f; do
+			find "$playlist" -maxdepth 2 -type f | sort -n | while read -r f; do
 				case "$f" in
 				*.flac | *.mp3 | *.ogg)
 					exif_wrapper "$f" >> "$playlist_tmp" ;;

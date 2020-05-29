@@ -45,6 +45,9 @@ export XAUTHORITY="$XDG_RUNTIME_DIR/Xauthority"
 export XINITRC="$XDG_CONFIG_HOME/X11/xinitrc"
 export XSERVERRC="$XDG_CONFIG_HOME/X11/xserverrc"
 
+# increase key rate
+xset r rate 300 50
+
 # setup miscellaneous environment variables
 export WM="dwm"
 export TERMINAL="/usr/local/bin/st"

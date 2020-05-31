@@ -1,0 +1,54 @@
+#!/bin/sh
+
+rundir="${XDG_CACHE_HOME:-$HOME/.cache}/brave-browser.xtract"
+
+#TODO :: check latest version, and if it match. Else ask to update
+
+case "$1" in
+latest)
+	latest="$(                                                              \
+		curl                                                                \
+			-L                                                              \
+			--silent https://github.com/brave/brave-browser/releases/latest \
+		| grep -m1 -o '/brave/brave-browser/releases/download/[^/]*')"
+	latest="${latest##*/}"
+	read -r -p "Install latest version '$latest'? [y/N] " response
+	case "$response" in
+	[yY][eE][sS]|[yY]) "$0" install $latest ;;
+	*) ;;
+	esac
+	exit
+	;;
+stable)
+	stable="$(                                                              \
+		curl                                                                \
+			--silent https://brave.com/latest/                              \
+		| grep -m1 -o 'Release Notes <strong>[^<]*')"
+	stable="v${stable##*>V}"
+	read -r -p "Install stable version '$stable'? [y/N] " response
+	case "$response" in
+	[yY][eE][sS]|[yY]) "$0" install $stable ;;
+	*) ;;
+	esac
+	exit
+	;;
+install)
+	shift; ver="$1"
+	[ "$ver" = "" ] && break
+
+	ver="$(curl                                                             \
+		-L                                                                  \
+		--silent https://github.com/brave/brave-browser/releases/tag/$ver   \
+	| grep -o '/brave/[^/]*/releases/download/[^/]*/brave-[^-]*-linux-x64.zip')"
+
+	[ "$ver" = "" ] && break
+
+	rm -rf "$rundir"
+	mkdir -p "$rundir"
+	wget "https://github.com$ver" -qO- | bsdtar -xvf- -C "$rundir"
+	chmod +x "$rundir"/brave
+	;;
+esac
+
+pgrep -x brave-browser >/dev/null && return
+[ -f "$rundir"/brave ] && "$rundir"/brave

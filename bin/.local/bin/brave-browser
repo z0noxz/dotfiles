@@ -50,5 +50,4 @@ install)
 	;;
 esac
 
-pgrep -x brave-browser >/dev/null && return
 [ -f "$rundir"/brave ] && "$rundir"/brave

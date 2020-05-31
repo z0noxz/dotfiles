@@ -71,8 +71,8 @@ super + shift + Return
 
 # --- browsers ----------------------------------------------------------------
 # :vimb tabbed
-super + shift + w; {v,f}
-	{~/.local/bin/alias/vimb-tabbed,firefox}
+super + shift + w; {b,v,f}
+	{~/.local/bin/brave-browser,~/.local/bin/alias/vimb-tabbed,firefox}
 
 # --- dmenus ------------------------------------------------------------------
 # :run menu

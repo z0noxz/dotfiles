@@ -11,6 +11,7 @@ cd "$_DIR" || return
 case "$_FILE" in
 *\.ps.ms)  preconv "$_FILE"                                                 \
 		| refer                                                             \
+		| sed -e 's:^\.ds \[\(.\) "\\\[u:.ds [\1 \\\[u:g'                   \
 		| tapas                                                             \
 		| grap                                                              \
 		| pic -Tps                                                          \
@@ -29,6 +30,7 @@ case "$_FILE" in
 		;;
 *\.ms)  preconv "$_FILE"                                                    \
 		| refer                                                             \
+		| sed -e 's:^\.ds \[\(.\) "\\\[u:.ds [\1 \\\[u:g'                   \
 		| tapas                                                             \
 		| grap                                                              \
 		| pic -Tpdf                                                         \

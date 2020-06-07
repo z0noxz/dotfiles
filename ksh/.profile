@@ -46,7 +46,7 @@ export XINITRC="$XDG_CONFIG_HOME/X11/xinitrc"
 export XSERVERRC="$XDG_CONFIG_HOME/X11/xserverrc"
 
 # increase key rate
-xset r rate 300 50
+xset q 2>/dev/null >/dev/null && xset r rate 300 50
 
 # setup miscellaneous environment variables
 export WM="dwm"

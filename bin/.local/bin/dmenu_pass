@@ -1,0 +1,10 @@
+#!/bin/sh
+dmenu_vtc="$(command -v dmenu_vtc)"
+
+die() {
+	printf "Error: %s\n" "$@"
+	exit 1
+}
+
+[ -z "$dmenu_vtc" ] && die "could not find 'dmenu_vtc'"
+$dmenu_vtc -P -p "${1%% *}" <&-

@@ -2,50 +2,69 @@
 
 rundir="${XDG_CACHE_HOME:-$HOME/.cache}/brave-browser.xtract"
 
-#TODO :: check latest version, and if it match. Else ask to update
-
-case "$1" in
-latest)
+get_latest_version() {
 	latest="$(                                                              \
 		curl                                                                \
 			-L                                                              \
 			--silent https://github.com/brave/brave-browser/releases/latest \
 		| grep -m1 -o '/brave/brave-browser/releases/download/[^/]*')"
 	latest="${latest##*/}"
-	read -r -p "Install latest version '$latest'? [y/N] " response
-	case "$response" in
+	echo "$latest"
+}
+
+get_stable_version() {
+	stable="$(                                                              \
+		curl                                                                \
+			--silent https://brave.com/latest/                              \
+		| grep -m1 -o 'Release Notes <strong>[^<]*')"
+	stable="v${stable##*>V}"
+	echo "$stable"
+}
+
+get_install_package() {
+	pkg="$(curl                                                             \
+		-L                                                                  \
+		--silent https://github.com/brave/brave-browser/releases/tag/$ver   \
+	| grep -o '/brave/[^/]*/releases/download/[^/]*/brave-[^-]*-linux-x64.zip')"
+	echo "$pkg"
+}
+
+case "$1" in
+status)
+	[ ! -f "$rundir/brave" ] && echo "brave is not installed"
+	ver="v$("$rundir/brave" --version | grep -o '[0-9\.]*' | cut -d'.' -f 2-)"
+	echo "current version installed: $ver"
+
+	stable="$(get_stable_version)"
+	if [ "$ver" != "$stable" ]; then
+		echo "latest stable version available: $stable"
+		"$0" stable
+	fi
+	exit
+	;;
+latest)
+	latest="$(get_latest_version)"
+	read -r -p "Install latest version '$latest'? [y/N] " a; case "$a" in
 	[yY][eE][sS]|[yY]) "$0" install $latest ;;
 	*) ;;
 	esac
 	exit
 	;;
 stable)
-	stable="$(                                                              \
-		curl                                                                \
-			--silent https://brave.com/latest/                              \
-		| grep -m1 -o 'Release Notes <strong>[^<]*')"
-	stable="v${stable##*>V}"
-	read -r -p "Install stable version '$stable'? [y/N] " response
-	case "$response" in
+	stable="$(get_stable_version)"
+	read -r -p "Install stable version '$stable'? [y/N] " a; case "$a" in
 	[yY][eE][sS]|[yY]) "$0" install $stable ;;
 	*) ;;
 	esac
 	exit
 	;;
 install)
-	shift; ver="$1"
-	[ "$ver" = "" ] && break
-
-	ver="$(curl                                                             \
-		-L                                                                  \
-		--silent https://github.com/brave/brave-browser/releases/tag/$ver   \
-	| grep -o '/brave/[^/]*/releases/download/[^/]*/brave-[^-]*-linux-x64.zip')"
-
-	[ "$ver" = "" ] && break
+	shift; ver="$1"; [ "$ver" = "" ] && break
+	pkg="$(get_install_package)"; [ "$pkg" = "" ] && break
 
 	rm -rf "$rundir"
 	mkdir -p "$rundir"
-	wget "https://github.com$ver" -qO- | bsdtar -xvf- -C "$rundir"
+	wget "https://github.com$pkg" -qO- | bsdtar -xvf- -C "$rundir"
 	chmod +x "$rundir"/brave
 	;;
 esac

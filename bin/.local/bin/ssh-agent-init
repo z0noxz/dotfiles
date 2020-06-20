@@ -1,14 +1,31 @@
 #!/bin/sh
 
+# initialized?
+[ -f "$HOME/.tmp/.ssh-agent-init-done" ] && return
+
+# clear key store
 ssh-add -D
+
+# load keys from pass
 set -- $(ls "$XDG_DATA_HOME/pass/ssh"); for key
 do
+	# extract key
+	touch "$HOME/.ssh/keys/.$key.key"
+	chmod 600 "$HOME/.ssh/keys/.$key.key"
+	pass ssh/$key/private > "$HOME/.ssh/keys/.$key.key"
+
+	# import key passphrase
 	pass ssh/$key/passphrase | ssh-add-pass "$HOME/.ssh/keys/.$key.key"     \
-	2>&1 >/dev/null && printf '[%s+%s] identity added: %s%s%s\n'            \
+	2>/dev/null >/dev/null && printf '[%s+%s] identity added: %s%s%s\n'     \
 		"$(tput setaf 10)"                                                  \
 		"$(tput sgr0)"                                                      \
 		"$(tput setaf 15)"                                                  \
 		"$key"                                                              \
 		"$(tput sgr0)"
+
+	# remove key once it's loaded
+	rm -f "$HOME/.ssh/keys/.$key.key"
 done
+
+# done!
 touch "$HOME/.tmp/.ssh-agent-init-done"

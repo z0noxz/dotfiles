@@ -7,7 +7,6 @@ fi
 
 PASS="$(cat - | sed -e "s|\"|\\\"|g")"
 
-
 expect <<EOF
 spawn ssh-add "$1"
 expect {
